@@ -1,0 +1,4 @@
+(executable
+  (name css)
+  (public_name css)
+  (libraries lib))
