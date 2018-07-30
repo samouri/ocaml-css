@@ -48,7 +48,7 @@ let decode_unicode s =
   assert (rv >= 0 && rv < 256);
   char_of_int rv
 
-(* XXX Skip whitespace? *)
+  (* XXX Skip whitespace? *)
 let uri lexeme =
   let l = String.length lexeme in
   URI(String.sub lexeme 4 (l-5))
