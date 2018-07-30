@@ -24,7 +24,7 @@ let doident lexeme =
   let l = String.length lexeme in
   if lexeme.[l-1] = '(' then FUNCTION(head1 lexeme) else IDENT(intern lexeme)
 
-let donumber lexeme = 
+let donumber lexeme =
   let l = String.length lexeme in
   if lexeme.[l-1] = '%' then
     PERCENTAGE(float_of_string(String.sub lexeme 0 (l-1)))
@@ -78,38 +78,40 @@ let css_comment = '/' '*' [^ '*']* '*'+ ([^ '/'][^ '*']* '*'+)* '/'
 rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
-    "<!--" | "-->" | css_comment | css_s { css lexbuf } |
-    '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) } |
-    '@' css_ident{ atkeyword(Lexing.lexeme lexbuf) } |
-    css_ident '('? { doident (Lexing.lexeme lexbuf) } |
-    (* XXX String processing: strip quotes; delete backslash-newline *)
-    css_string { STRING(inner(Lexing.lexeme lexbuf)) } |
-    ['+' '-']? css_num '%'? { donumber(Lexing.lexeme lexbuf) } |
-    ['+' '-']? css_num css_ident { split_dimension(Lexing.lexeme lexbuf) } |
-    (* XXX Should be case-insentive? *)
-    "url(" css_w css_ident css_w ')' |
-    "url(" css_w (['!' '#' '$' '%' '&' - '~' ] | css_nonascii | css_escape) css_w ')' { uri(Lexing.lexeme lexbuf) } |
-    "U+" (HEX | '?')+ ('-' HEX+)? { UNICODE(0,0) } |
-    '*' { STAR } |
-    '.' { DOT } |
-    ',' { COMMA } |
-    '+' { PLUS } |
-    '-' { MINUS } |
-    '[' { LSQUARE } |
-    ']' { RSQUARE } |
-    ':' { COLON } |
-    '>' { CHILD } |
-    '{' { LBRACE } |
-    '}' { RBRACE } |
-    ';' { SEMICOLON } |
-    '=' { EQUALS } |
-    '(' { LPAREN } |
-    ')' { RPAREN } |
-    '/' { SLASH } |	(* Only in font: line-height declaration *)
-    '!' { EXCLAMATION } |(* Only followed by "important" *)
+    | "<!--" | "-->" | css_comment | css_s { css lexbuf }
+    | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) }
+    | '@' css_ident{ atkeyword(Lexing.lexeme lexbuf) }
+    | css_ident '('? { doident (Lexing.lexeme lexbuf) }
+    | (* XXX String processing: strip quotes; delete backslash-newline *)
+    css_string { STRING(inner(Lexing.lexeme lexbuf)) }
+    | ['+' '-']? css_num '%'? { donumber(Lexing.lexeme lexbuf) }
+    | ['+' '-']? css_num css_ident { split_dimension(Lexing.lexeme lexbuf) }
+     (* XXX Should be case-insentive? *)
+    | "url(" css_w css_ident css_w ')'
+    | "url(" css_w (['!' '#' '$' '%' '&' - '~' ] | css_nonascii | css_escape) css_w ')' { uri(Lexing.lexeme lexbuf) }
+    | "U+" (HEX | '?')+ ('-' HEX+)? { UNICODE(0,0) }
+    | '*' { STAR }
+    | '.' { DOT }
+    | ',' { COMMA }
+    | '+' { PLUS }
+    | '-' { MINUS }
+    | '[' { LSQUARE }
+    | ']' { RSQUARE }
+    | ':' { COLON }
+    | '>' { CHILD }
+    | '{' { LBRACE }
+    | '}' { RBRACE }
+    | ';' { SEMICOLON }
+    | '=' { EQUALS }
+    | '(' { LPAREN }
+    | ')' { RPAREN }
+    | '/' { SLASH }
+    (* Only in font: line-height declaration *)
+    | '!' { EXCLAMATION }
+    (* Only followed by "important" *)
     (* XXX Parentheses? *)
     (*css_s { Space } |*)
-    "~=" { CONTAINS } |
-    "|=" { PREFIX } |
-    _ { ERROR((Lexing.lexeme lexbuf).[0]) } |
-    eof { EOF }
+    | "~=" { CONTAINS }
+    | "|=" { PREFIX }
+    | _ { ERROR((Lexing.lexeme lexbuf).[0]) }
+    | eof { EOF }

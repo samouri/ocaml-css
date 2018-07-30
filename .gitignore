@@ -10,3 +10,6 @@ _release
 *.native
 *.install
 esy.lock
+Parser.mli
+Parser.ml
+Lexer.ml

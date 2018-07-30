@@ -1,8 +1,7 @@
-type unaryOperator = None | Plus | Minus;;
-type dimension = unaryOperator * (float * string);;
 type operator = NoOp | Slash | Comma;;
 
-type term = Dimension of dimension
+type term = 
+  | Dimension of float * string
   | String of string
   | Ident of string
   | URI of string
@@ -12,5 +11,6 @@ and statement = Term of term | Operator of operator
 and expression = statement list
 ;;
 
-type rule = string * expression * bool;;
-type rules = rule list;;
+type rule = string * (term list);;
+type ruleset = string * (rule list);;
+type rulesets = (ruleset list) option;;
