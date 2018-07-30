@@ -6,9 +6,11 @@ h1 {
   font-size: 12px;
 }
 
-.classnames {
+.classnames, h2 {
   hello: 'vent';
-}
+} 
+
+.hello .world {}
 ";;
 
 
@@ -39,8 +41,10 @@ let print_rules (rules: rule list) =
   |> String.concat " \n"
 ;;
 
-let print_ruleset (selector, rules) = 
-  Printf.sprintf "%s {\n%s\n}" selector (print_rules rules)
+let print_selectors selectors = String.concat ",\n" selectors;;
+
+let print_ruleset (selectors, rules) = 
+  Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
   ;;
 
 let printAST (rulesets:rulesets) = match rulesets with
@@ -68,5 +72,5 @@ let parse str =
 let parsed = parse test;;
 
 print_endline test;; 
-print_endline "---------------";;
+print_endline "\n---------------\n";;
 print_endline (printAST parsed);;

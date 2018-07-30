@@ -7,10 +7,13 @@ type term =
   | URI of string
   | HexColor of string
   | Func of expression
+
 and statement = Term of term | Operator of operator
 and expression = statement list
 ;;
 
+type selectors = string list;;
+
 type rule = string * (term list);;
-type ruleset = string * (rule list);;
+type ruleset = selectors * (rule list);;
 type rulesets = (ruleset list) option;;

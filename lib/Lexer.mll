@@ -78,7 +78,7 @@ let css_comment = '/' '*' [^ '*']* '*'+ ([^ '/'][^ '*']* '*'+)* '/'
 rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
-    | "<!--" | "-->" | css_comment | css_s { css lexbuf }
+    | "<!--" | "-->" | css_comment { css lexbuf }
     | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) }
     | '@' css_ident{ atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
@@ -110,7 +110,7 @@ rule css =
     | '!' { EXCLAMATION }
     (* Only followed by "important" *)
     (* XXX Parentheses? *)
-    (*css_s { Space } |*)
+    | css_s { S }
     | "~=" { CONTAINS }
     | "|=" { PREFIX }
     | _ { ERROR((Lexing.lexeme lexbuf).[0]) }

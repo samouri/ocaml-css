@@ -20,28 +20,27 @@
 /* stylesheet */
 stylesheet:
   | EOF { None }
-  | ruleset_list { Some $1 }
+  | rulesets EOF { Some $1 }
   ;
 
-ruleset_list:
- | ruleset { $1 }
- | ruleset ruleset_list { $1 :: $2 }
+rulesets:
  | EOF { [] }
+ | S* r=ruleset S* { [ r ] }
+ | S* r=ruleset S* rs=rulesets S* { r :: rs }
  ;
 
 ruleset:
-  selector LBRACE rules RBRACE { ($1, $3) }
+  | S* s=selectors S* LBRACE S* r=rules S* RBRACE { (s , r) }
   ;
 
 rules:
   | { [] }
-  | IDENT COLON terms SEMICOLON rules { ($1, $3) :: $5 } 
+  | S* p=IDENT S* COLON S* t=terms S* SEMICOLON S* r=rules S* { (p, t) :: r } 
   ;
 
 terms:
-  | { [] }
-  | term { [ $1 ] }
-  | term terms { $1 :: $2 }
+  | S* t=term S* { [ t ] }
+  | S* t=term S* ts=terms S* { t :: ts }
  ; 
 
 term: 
@@ -52,9 +51,16 @@ term:
  (* | FUNCTION { Func $1 } *)
   ;
 
+selectors: 
+  | S* s=selector S* { [ s ] } 
+  | S* s1=selector S+ s2=selector { [ s1 ^ " " ^ s2 ] } 
+  | S* s1=selector s2=selector { [ s1 ^ s2 ] }
+  | S* s=selector S* COMMA S* ss=selectors S* { s :: ss } 
+ ; 
+ 
 selector: 
   | element_name { $1 }
-  | DOT IDENT { $2 }
+  | DOT i=IDENT { "." ^ i }
   ;
 
 element_name: 
