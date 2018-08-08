@@ -1,5 +1,6 @@
 type operator = NoOp | Slash | Comma;;
 
+type position = Lexing.position * Lexing.position;;
 type term = 
   | Dimension of float * string
   | String of string

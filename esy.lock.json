@@ -1,5 +1,5 @@
 {
-  "hash": "24e996fc0c2c70917ba3038f270a3127",
+  "hash": "dfec074baec662b16b036d2ab68abcb2",
   "root": "css@path:.",
   "node": {
     "ocaml@4.6.4": {
@@ -22,9 +22,9 @@
         "opam": null
       },
       "dependencies": [
-        "@esy-ocaml/esy-installer@0.0.0", "@opam/jbuilder@opam:transition",
-        "@opam/lambda-term@opam:1.13", "@opam/lwt@opam:4.0.0",
-        "@opam/merlin@opam:3.1.0", "ocaml@4.6.4"
+        "@esy-ocaml/esy-installer@0.0.0", "@opam/cmdliner@opam:1.0.2",
+        "@opam/jbuilder@opam:transition", "@opam/lambda-term@opam:1.13",
+        "@opam/lwt@opam:4.0.0", "@opam/merlin@opam:3.1.0", "ocaml@4.6.4"
       ]
     },
     "@opam/zed@opam:1.6": {
@@ -349,7 +349,7 @@
       },
       "dependencies": [
         "@esy-ocaml/esy-installer@0.0.0", "@esy-ocaml/substs@0.0.1",
-        "@opam/dune@opam:1.0.1", "@opam/ocamlfind@opam:1.8.0"
+        "@opam/dune@opam:1.1.0", "@opam/ocamlfind@opam:1.8.0"
       ]
     },
     "@opam/easy-format@opam:1.3.1": {
@@ -374,18 +374,18 @@
         "@opam/jbuilder@opam:transition"
       ]
     },
-    "@opam/dune@opam:1.0.1": {
+    "@opam/dune@opam:1.1.0": {
       "record": {
         "name": "@opam/dune",
-        "version": "opam:1.0.1",
+        "version": "opam:1.1.0",
         "source": [
-          "archive:https://opam.ocaml.org/archives/dune.1.0.1+opam.tar.gz#md5:bcfdd66662b5306c42ca8185deb39862",
-          "archive:https://github.com/ocaml/dune/releases/download/1.0.1/dune-1.0.1.tbz#md5:7f6c56aa5a9043afb7b0dd313887c7c9"
+          "archive:https://opam.ocaml.org/archives/dune.1.1.0+opam.tar.gz#md5:055d9677bef62fe9cc320bae216e1cea",
+          "archive:https://github.com/ocaml/dune/releases/download/1.1.0/dune-1.1.0.tbz#md5:a5e8b1b0b1b5fbd2a1af99c1959d65c5"
         ],
         "files": [],
         "opam": {
           "name": "dune",
-          "version": "1.0.1",
+          "version": "1.1.0",
           "opam":
             "opam-version: \"1.2\"\nmaintainer: \"opensource@janestreet.com\"\nauthors: \"Jane Street Group, LLC <opensource@janestreet.com>\"\nlicense: \"MIT\"\nhomepage: \"https://github.com/ocaml/dune\"\nbug-reports: \"https://github.com/ocaml/dune/issues\"\nconflicts: [\n  \"jbuilder\" {!= \"transition\"}\n]\navailable: ocaml-version >= \"4.02.3\"\nbuild: [\n  [\"ocaml\" \"configure.ml\" \"--libdir\" lib]\n  [\"ocaml\" \"bootstrap.ml\"]\n  [\"./boot.exe\" \"--release\" \"--subst\"] {pinned}\n  [\"./boot.exe\" \"--release\" \"-j\" jobs]\n]\ndev-repo: \"git+https://github.com/ocaml/dune.git\"",
           "override": {
@@ -457,6 +457,29 @@
       },
       "dependencies": [
         "@esy-ocaml/esy-installer@0.0.0", "@esy-ocaml/substs@0.0.1"
+      ]
+    },
+    "@opam/cmdliner@opam:1.0.2": {
+      "record": {
+        "name": "@opam/cmdliner",
+        "version": "opam:1.0.2",
+        "source": [
+          "archive:https://opam.ocaml.org/archives/cmdliner.1.0.2+opam.tar.gz#md5:b3f734417099fa5d9198bc927b12873f",
+          "archive:http://erratique.ch/software/cmdliner/releases/cmdliner-1.0.2.tbz#md5:ab2f0130e88e8dcd723ac6154c98a881"
+        ],
+        "files": [],
+        "opam": {
+          "name": "cmdliner",
+          "version": "1.0.2",
+          "opam":
+            "opam-version: \"1.2\"\nmaintainer: \"Daniel Bünzli <daniel.buenzl i@erratique.ch>\"\nauthors: \"Daniel Bünzli <daniel.buenzl i@erratique.ch>\"\nlicense: \"ISC\"\ntags: [\"cli\" \"system\" \"declarative\" \"org:erratique\"]\nhomepage: \"http://erratique.ch/software/cmdliner\"\ndoc: \"http://erratique.ch/software/cmdliner/doc/Cmdliner\"\nbug-reports: \"https://github.com/dbuenzli/cmdliner/issues\"\ndepends: [\n  \"ocamlfind\" {build}\n  \"ocamlbuild\" {build}\n  \"topkg\" {build}\n  \"result\"\n]\navailable: ocaml-version >= \"4.01.0\"\nbuild: [\"ocaml\" \"pkg/pkg.ml\" \"build\" \"--pinned\" \"%{pinned}%\"]\ndev-repo: \"git+http://erratique.ch/repos/cmdliner.git\"",
+          "override": null
+        }
+      },
+      "dependencies": [
+        "@esy-ocaml/esy-installer@0.0.0", "@esy-ocaml/substs@0.0.1",
+        "@opam/ocamlbuild@opam:0.12.0", "@opam/ocamlfind@opam:1.8.0",
+        "@opam/result@opam:1.3", "@opam/topkg@opam:0.9.1"
       ]
     },
     "@opam/camomile@opam:1.0.1": {
