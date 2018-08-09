@@ -34,14 +34,14 @@ let print_ruleset (selectors, rules) =
   Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
   ;;
 
-let printAST (rulesets:rulesets) = match rulesets with
+let prettyPrint (rulesets:rulesets) = match rulesets with
   | None -> "There is no css!"
   | Some r -> r
     |> List.map (fun ruleset -> print_ruleset ruleset)
     |> String.concat "\n\n"
 ;;
 
-let print = printAST;;
+let print = prettyPrint;;
 
 let parse str =
   let lexbuf = Lexing.from_string str in
@@ -100,7 +100,7 @@ let load_file f =
 let run file _ =
   let css_str = load_file file in
   let parsed = parse css_str in
-  let prettyPrinted = printAST parsed in
+  let prettyPrinted = prettyPrint parsed in
   print_endline prettyPrinted
   ;;
 

@@ -7,9 +7,14 @@ type term =
   | Ident of string
   | URI of string
   | HexColor of string
-  | Func of expression
+  | Func of expression 
+  [@@deriving yojson show]
 
-and statement = Term of term | Operator of operator
+and statement = 
+ | Term of term 
+ | Operator of operator 
+ [@@deriving yojson show]
+
 and expression = statement list
 ;;
 
@@ -17,4 +22,4 @@ type selectors = string list;;
 
 type rule = string * (term list);;
 type ruleset = selectors * (rule list);;
-type rulesets = (ruleset list) option;;
+type rulesets = (ruleset list) option [@@deriving yojson show];;

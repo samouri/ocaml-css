@@ -1,4 +1,6 @@
 (library
   (name lib)
+  (libraries lambda-term lwt)
   (public_name css)
-  (libraries lambda-term lwt))
+  (preprocess (pps ppx_deriving.std ppx_deriving ppx_deriving_yojson))
+)

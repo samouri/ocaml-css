@@ -21,7 +21,10 @@
     "@opam/jbuilder": "*",
     "@opam/lambda-term": "*",
     "@opam/lwt": "4.0.0",
-    "@opam/cmdliner": "1.0.2"
+    "@opam/cmdliner": "1.0.2",
+    "@opam/ppx_deriving": "^4.2.1",
+    "@opam/ppx_deriving_yojson": "3.1",
+    "@opam/yojson": "1.4.0"
   },
   "peerDependencies": {
     "ocaml": "~4.6.0"
