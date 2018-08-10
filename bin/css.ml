@@ -64,7 +64,7 @@ let str_of_output = function
   | Errors -> "errors"
   | AST -> "ast";;
 
-let output_of_str = function
+let output_of_str o = match (String.lowercase_ascii o) with
   | "pretty" -> Pretty
   | "errors"  -> Errors
   | "ast" -> AST
@@ -97,13 +97,19 @@ let load_file f =
   Bytes.to_string s
   ;;
 
-let run file _ =
+let run file output_str =
   let css_str = load_file file in
   let parsed = parse css_str in
-  let prettyPrinted = prettyPrint parsed in
-  print_endline prettyPrinted
+  let output_flag = output_of_str output_str in (* learn how to make the proper CMDLiner converter for this *)
+  let output = if output_flag = Pretty then
+    prettyPrint parsed
+    else
+    Yojson.Safe.pretty_to_string ~std:true (rulesets_to_yojson parsed)
+  in
+  print_endline output
   ;;
-
 
 let css_t = Term.(const run $ file $ output)
 let () = Term.exit @@ Term.eval (css_t, Term.info "css-parse")
+
+

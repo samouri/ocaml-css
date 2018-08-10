@@ -1,6 +1,7 @@
 (library
   (name lib)
-  (libraries lambda-term lwt)
+  (libraries lambda-term lwt yojson ppx_deriving_yojson.runtime)
   (public_name css)
-  (preprocess (pps ppx_deriving.std ppx_deriving ppx_deriving_yojson))
+  (preprocess (pps ppx_deriving.show ppx_deriving_yojson))
+  (flags (-w -39))
 )
