@@ -1,6 +1,19 @@
 {
 open Parser
 
+(*
+ * Some code taken from Real World OCaml v2: https://dev.realworldocaml.org/parsing-with-ocamllex-and-menhir.html 
+ *)
+exception SyntaxError of string
+
+let next_line (lexbuf:Lexing.lexbuf) =
+  let pos = lexbuf.lex_curr_p in
+  lexbuf.lex_curr_p <-
+    { pos with pos_bol = lexbuf.lex_curr_pos;
+               pos_lnum = pos.pos_lnum + 1;
+    }
+;;
+
 let tail1 s = String.sub s 1 ((String.length s) - 1)
 and head1 s = String.sub s 0 ((String.length s) - 1)
 and inner s = String.sub s 1 ((String.length s) - 2)
@@ -68,8 +81,8 @@ let css_nl = '\n' | '\r' '\n' | '\r' | '\012'
 let css_string1 = '\034' ( [ '\t' ' ' '!' '#' '$' '%' '&' '(' - '~' ] | '\\' css_nl | '\'' | css_nonascii | css_escape )* '\034'
 let css_string2 = '\039' ( [ '\t' ' ' '!' '#' '$' '%' '&' '(' - '~' ] | '\\' css_nl | '\034' | css_nonascii | css_escape )* '\039'
 let css_string = css_string1 | css_string2
-let css_w = [' ' '\t' '\r' '\n' '\012']*
-let css_s = [' ' '\t' '\r' '\n' '\012']+
+let css_w = [' ' '\t' '\r' '\012']*
+let css_s = [' ' '\t' '\r' '\012']+
 let css_comment = '/' '*' [^ '*']* '*'+ ([^ '/'][^ '*']* '*'+)* '/'
 
 (* The CSS spec defines a grammar which allows just about any combination
@@ -80,10 +93,11 @@ rule css =
     (* Skip over CDO, CDC, and comments. *)
     | "<!--" | "-->" | css_comment { css lexbuf }
     | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) }
-    | '@' css_ident{ atkeyword(Lexing.lexeme lexbuf) }
+    | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
-    | (* XXX String processing: strip quotes; delete backslash-newline *)
-    css_string { STRING(inner(Lexing.lexeme lexbuf)) }
+    (* XXX String processing: strip quotes; delete backslash-newline *)
+    | css_string { STRING(inner(Lexing.lexeme lexbuf)) }
+    | css_nl { next_line lexbuf; css lexbuf }
     | ['+' '-']? css_num '%'? { donumber(Lexing.lexeme lexbuf) }
     | ['+' '-']? css_num css_ident { split_dimension(Lexing.lexeme lexbuf) }
      (* XXX Should be case-insentive? *)

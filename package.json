@@ -21,16 +21,17 @@
     "@opam/jbuilder": "*",
     "@opam/lambda-term": "*",
     "@opam/lwt": "4.0.0",
+    "@opam/menhir": "20180703",
     "@opam/cmdliner": "1.0.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.1",
     "@opam/yojson": "1.4.0"
   },
   "peerDependencies": {
-    "ocaml": "~4.6.0"
+    "ocaml": "4.6.1"
   },
   "devDependencies": {
     "@opam/merlin": "^3.0.3",
-    "ocaml": "~4.6.0"
+    "ocaml": "4.6.1"
   }
 }

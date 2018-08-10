@@ -30,12 +30,13 @@ rulesets:
  ;
 
 ruleset:
-  | S* s=selectors S* LBRACE S* r=rules S* RBRACE { (s , r) }
+  | S* s=selectors S* LBRACE S* r=rules S* RBRACE { (s , r, $loc) }
   ;
 
 rules:
   | { [] }
-  | S* p=IDENT S* COLON S* t=terms S* SEMICOLON S* r=rules S* { (p, t) :: r } 
+  | S* p=IDENT S* COLON S* t=terms S* SEMICOLON S* r=rules S* 
+    { (p, t, $loc) :: r } 
   ;
 
 terms:

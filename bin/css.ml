@@ -1,11 +1,11 @@
-open Lib.Types
+(* open Lib.Types *)
 open Lib.Printer
 open Cmdliner
 
 let print = prettyPrint;;
 
-let parse str =
-  let lexbuf = Lexing.from_string str in
+let parse ch =
+  let lexbuf = Lexing.from_channel ch in
   try
     Lib.Parser.stylesheet Lib.Lexer.css lexbuf
   with exn -> (
@@ -59,13 +59,13 @@ let load_file f =
   ;;
 
 let run file output_str =
-  let css_str = load_file file in
-  let parsed = parse css_str in
+  (* let css_str = load_file file in *)
+  let parsed = parse (open_in file) in
   let output_flag = output_of_str output_str in (* learn how to make the proper CMDLiner converter for this *)
   let output = if output_flag = Pretty then
     prettyPrint parsed
     else
-    Yojson.Safe.pretty_to_string ~std:true (rulesets_to_yojson parsed)
+    Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson parsed)
   in
   print_endline output
   ;;
