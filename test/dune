@@ -1,6 +1,6 @@
 (executable
-  (name css)
-  (public_name bin)
-  (libraries lib cmdliner yojson)
+  (name test)
+  (public_name css)
+  (libraries css cmdliner yojson)
   (preprocess (pps ppx_deriving.std ppx_deriving_yojson))
- )
+)
