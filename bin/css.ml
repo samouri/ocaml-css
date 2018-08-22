@@ -1,21 +1,6 @@
 (* open Lib.Types *)
-open Lib.Printer
+open Lib.Index
 open Cmdliner
-
-let print = prettyPrint;;
-
-let parse ch =
-  let lexbuf = Lexing.from_channel ch in
-  try
-    Lib.Parser.stylesheet Lib.Lexer.css lexbuf
-  with exn -> (
-    let curr = lexbuf.Lexing.lex_curr_p in
-    let line = curr.Lexing.pos_lnum in
-    let cnum = curr.Lexing.pos_cnum - curr.Lexing.pos_bol in
-    let tok = Lexing.lexeme lexbuf in
-    (print_endline (Printf.sprintf "Error at location (%d:%d) with character: %s" line cnum tok));
-    raise exn
-  )
 
 type output_t = Pretty | Errors | AST;;
 
@@ -63,7 +48,7 @@ let run file output_str =
   let parsed = parse (open_in file) in
   let output_flag = output_of_str output_str in (* learn how to make the proper CMDLiner converter for this *)
   let output = if output_flag = Pretty then
-    prettyPrint parsed
+    print parsed
     else
     Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson parsed)
   in

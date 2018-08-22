@@ -1,4 +1,4 @@
-open Css;;
+(* open Lib.Index;; *)
 
 let dir_contents dir =
   Sys.readdir dir |> Array.to_list
@@ -6,18 +6,23 @@ let dir_contents dir =
 
 let rec printlst = function | [] -> (); | hd :: tl -> (print_endline hd); printlst tl;;
 
-let run_test dir = 
-  (print_endline ("running test for case: ./test/cases/*" ^ dir));
-  (printlst (dir_contents dir))
+(* we want to gather a list of the folders that are passing and failing. ideally just printing out thetones that succeed since
+ * almost none will, as well as optionally which are failing
+ *)
+let run_test dir =
+  (print_endline ("running test for case: ./test/cases/" ^ dir ^ "/*"));
+  (dir_contents ( "./test/cases/" ^ dir))
+    |> List.map (fun x -> "    " ^ x)
+    |> printlst
 ;;
 
-let main () = 
+let main () =
   (print_endline "RUN ALL TESTS 0/0");
   let rec runtests = function
     | [] -> print_endline "DONE!"
     | hd::tl -> run_test hd; runtests tl
   in
-  runtests (dir_contents "./tests/cases")
+  runtests (dir_contents "./test/cases")
 ;;
 
 

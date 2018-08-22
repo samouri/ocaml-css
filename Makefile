@@ -2,7 +2,7 @@ build: lexer parser
 	@esy build
 
 test: build
-	./_build/default/bin/test.exe
+	./_build/install/default/bin/test
 
 lexer:
 	@ocamllex -q ./lib/Lexer.mll
