@@ -1,10 +1,11 @@
 open Types
 
 let print_term ?(wrap=true) (term: term) = 
-  let wrapFn s = if wrap then "\"" ^ s  ^ "\"" else s in
+  let wrapFn s = if wrap then "'" ^ s  ^ "'" else s in
   match term with
   | String str -> wrapFn str
   | Ident str -> wrapFn str
+  | Number i -> (string_of_int i)
   | URI str -> wrapFn str
   | HexColor str -> wrapFn str 
   | Dimension (num, str) -> Printf.sprintf "%f%s" num str
@@ -25,8 +26,8 @@ let print_expr (expressions: term list) =
 
 let print_rules (rules: rule list) =
   rules
-  |> List.map (fun (prop, expr,_) -> Printf.sprintf " %s: %s;" prop (print_expr expr))
-  |> String.concat " \n"
+  |> List.map (fun (prop, expr,_) -> Printf.sprintf "  %s: %s;" prop (print_expr expr))
+  |> String.concat "\n"
 ;;
 
 let print_selectors selectors = String.concat ",\n" selectors;;
@@ -89,7 +90,7 @@ let stylesheetToJson (rulesets:rulesets):Yojson.Safe.json =
 
 let prettyPrint (rulesets:rulesets) = match rulesets with
   | None -> "There is no css!"
-  | Some r -> r
+  | Some r -> (r
     |> List.map (fun ruleset -> print_ruleset ruleset)
-    |> String.concat "\n\n"
+    |> String.concat "\n\n") ^ "\n"
 ;;

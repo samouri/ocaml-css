@@ -1,6 +1,6 @@
 (executable
   (name test)
   (public_name test)
-  (libraries lib cmdliner yojson)
+  (libraries lib cmdliner yojson ounit)
   (preprocess (pps ppx_deriving.std ppx_deriving_yojson))
 )

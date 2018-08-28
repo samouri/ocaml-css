@@ -46,6 +46,7 @@ terms:
 
 term: 
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
+  | NUMBER { Number (int_of_string $1) } 
   | STRING { String $1 }
   | IDENT { Ident $1 }
   | URI { URI $1 }

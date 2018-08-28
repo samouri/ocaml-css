@@ -14,6 +14,7 @@ type term =
   | Dimension of float * string
   | String of string 
   | Ident of string
+  | Number of int
   | URI of string
   | HexColor of string
   | Func of expression [@@deriving show, yojson]

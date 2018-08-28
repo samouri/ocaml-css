@@ -1,29 +1,36 @@
-(* open Lib.Index;; *)
+open Lib.Index;;
+open OUnit2;;
 
 let dir_contents dir =
   Sys.readdir dir |> Array.to_list
 ;;
 
+let load_file f =
+  let ic = open_in f in
+  let n = in_channel_length ic in
+  let s = Bytes.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  Bytes.to_string s
+  ;;
+
 let rec printlst = function | [] -> (); | hd :: tl -> (print_endline hd); printlst tl;;
 
-(* we want to gather a list of the folders that are passing and failing. ideally just printing out thetones that succeed since
- * almost none will, as well as optionally which are failing
- *)
-let run_test dir =
-  (print_endline ("running test for case: ./test/cases/" ^ dir ^ "/*"));
-  (dir_contents ( "./test/cases/" ^ dir))
-    |> List.map (fun x -> "    " ^ x)
-    |> printlst
+let test_path = "./test/cases"
+let test_dirs = dir_contents test_path;;
+
+let get_test_for_dir dir = 
+  let inputFile = open_in (test_path ^ "/" ^ dir ^ "/input.css") in
+  let expectedStr = load_file (test_path ^ "/" ^ dir ^ "/output.css") in
+  let actual = print (parse inputFile) in
+  (print_endline (string_of_int ((String.length expectedStr) - (String.length actual))));
+  dir >:: (fun _ -> assert_equal ~msg:dir ~printer:(fun x -> x) expectedStr actual)
 ;;
 
-let main () =
-  (print_endline "RUN ALL TESTS 0/0");
-  let rec runtests = function
-    | [] -> print_endline "DONE!"
-    | hd::tl -> run_test hd; runtests tl
-  in
-  runtests (dir_contents "./test/cases")
+let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
+  "rule"; 
+  "rules";
+  ])
 ;;
 
-
-main ();;
+run_test_tt_main suite
