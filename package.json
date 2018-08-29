@@ -34,5 +34,8 @@
   "devDependencies": {
     "@opam/merlin": "^3.0.3",
     "ocaml": "4.6.1"
+  },
+  "scripts": {
+    "test": "make test"
   }
 }
