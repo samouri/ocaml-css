@@ -4,7 +4,7 @@ let print_term ?(wrap=true) (term: term) =
   let wrapFn s = if wrap then "'" ^ s  ^ "'" else s in
   match term with
   | String str -> wrapFn str
-  | Ident str -> wrapFn str
+  | Ident str -> str
   | Number i -> (string_of_int i)
   | URI str -> wrapFn str
   | HexColor str -> wrapFn str 
@@ -72,8 +72,7 @@ let rulesetToJson (ruleset:ruleset): Yojson.Safe.json = match ruleset with
 ;;
 
 let rec rulesetsToJson (rulesets:rulesets): Yojson.Safe.json =  match rulesets with 
- | None -> `Null
- | Some [] -> `Null
+ | None | Some []-> `List []
  | Some (hd::tl) -> `List ((rulesetToJson hd) :: (List.map rulesetToJson tl))
  ;;
 
