@@ -30,13 +30,13 @@ rulesets:
  ;
 
 ruleset:
-  | S* s=selectors S* LBRACE S* r=rules S* RBRACE { (s , r, $loc) }
+  | s=selectors S* LBRACE S* r=rules S* e=RBRACE { (s , r, ($startpos(s), $endpos(e))) }
   ;
 
 rules:
   | { [] }
   | S* p=IDENT S* COLON S* t=terms S* SEMICOLON S* r=rules S* 
-    { (p, t, $loc) :: r } 
+    { (p, t, ($startpos(p), $endpos(t))) :: r } 
   ;
 
 terms:
@@ -54,10 +54,10 @@ term:
   ;
 
 selectors: 
-  | S* s=selector S* { [ s ] } 
-  | S* s1=selector S+ s2=selector { [ s1 ^ " " ^ s2 ] } 
-  | S* s1=selector s2=selector { [ s1 ^ s2 ] }
-  | S* s=selector S* COMMA S* ss=selectors S* { s :: ss } 
+  | s=selector S* { [ s ] } 
+  | s1=selector S+ s2=selector { [ s1 ^ " " ^ s2 ] } 
+  | s1=selector s2=selector { [ s1 ^ s2 ] }
+  | s=selector S* COMMA S* ss=selectors S* { s :: ss } 
  ; 
  
 selector: 

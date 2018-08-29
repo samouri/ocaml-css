@@ -45,12 +45,9 @@ let load_file f =
 
 let run file output_str =
   (* let css_str = load_file file in *)
-  let parsed = parse (open_in file) in
+  let parsed = parse file in
   let output_flag = output_of_str output_str in (* learn how to make the proper CMDLiner converter for this *)
-  let output = if output_flag = Pretty then
-    print parsed
-    else
-    Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson parsed)
+  let output = if output_flag = Pretty then print parsed else astPrint parsed
   in
   print_endline output
   ;;

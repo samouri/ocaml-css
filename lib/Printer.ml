@@ -40,16 +40,17 @@ let positionToJson (position:position): Yojson.Safe.json = match position with
   (start, finish) -> `Assoc [
     ("start", `Assoc [
       ("line", `Int start.pos_lnum);
-      ("column", `Int (start.Lexing.pos_cnum - start.Lexing.pos_bol))
+      ("column", `Int (start.Lexing.pos_cnum - start.Lexing.pos_bol + 1))
     ]);
     ("end", `Assoc [
       ("line", `Int finish.pos_lnum);
-      ("column", `Int (finish.Lexing.pos_cnum - finish.Lexing.pos_bol))
-    ])
+      ("column", `Int (finish.Lexing.pos_cnum - finish.Lexing.pos_bol + 1))
+    ]);
+    ("source", `String start.pos_fname )
   ]
 
 let termsToJson (terms:term list) = match terms with
-  _ -> `String (String.concat "" (List.map (print_term ~wrap:false) terms))
+  _ -> `String (String.concat "" (List.map print_term terms))
 ;;
 
 let ruleToJson (rule:rule): Yojson.Safe.json = match rule with
@@ -87,6 +88,9 @@ let stylesheetToJson (rulesets:rulesets):Yojson.Safe.json =
   ]
 ;;
 
+
+let astPrint (rulesets:rulesets): string = 
+  Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson rulesets);;
 
 let prettyPrint (rulesets:rulesets) = match rulesets with
   | None -> "There is no css!"

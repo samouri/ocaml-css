@@ -19,17 +19,66 @@ let rec printlst = function | [] -> (); | hd :: tl -> (print_endline hd); printl
 let test_path = "./test/cases"
 let test_dirs = dir_contents test_path;;
 
-let get_test_for_dir dir = 
-  let inputFile = open_in (test_path ^ "/" ^ dir ^ "/input.css") in
+let get_test_for_dir dir =
+  let inputFile = (test_path ^ "/" ^ dir ^ "/input.css") in
   let expectedStr = load_file (test_path ^ "/" ^ dir ^ "/output.css") in
-  let actual = print (parse inputFile) in
-  (print_endline (string_of_int ((String.length expectedStr) - (String.length actual))));
-  dir >:: (fun _ -> assert_equal ~msg:dir ~printer:(fun x -> x) expectedStr actual)
+  let expectedAst = Yojson.Safe.prettify (load_file (test_path ^ "/" ^ dir ^ "/ast.json")) in
+  let actualAst = astPrint (parse inputFile) in
+  let actualStr = print (parse inputFile) in
+  dir >:: (fun _ -> (
+    assert_equal ~msg:"pretty-print" ~printer:(fun x -> x) expectedStr actualStr;
+    assert_equal ~msg:"ast-print" ~printer:(fun x -> x) expectedAst actualAst;
+  ))
 ;;
 
 let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
-  "rule"; 
+  (* "at-namespace";
+  "charset";
+  "charset-linebreak";
+  "colon-space";
+  "comma-attribute";
+  "comma-selector-function";
+  "comment";
+  "comment-in";
+  "comment-url";
+  "custom-media";
+  "custom-media-linebreak";
+  "document";
+  "document-linebreak";
+  "empty";
+  "escapes";
+  "font-face";
+  "font-face-linebreak";
+  "hose-linebreak";
+  "host";
+  "import";
+  "import-linebreak";
+  "import-messed";
+  "keyframes";
+  "keyframes-advanced";
+  "keyframes-complex";
+  "keyframes-linebreak";
+  "keyframes-messed";
+  "keyframes-vendor";
+  "media";
+  "media-linebreak";
+  "media-messed";
+  "messed-up";
+  "namespace";
+  "namespace-linebreak";
+  "no-semi";
+  "page-linebreak";
+  "paged-media";
+  "props";
+  "quote-escape";
+  "quoted";  *)
+  "rule";
   "rules";
+  (*
+  "selectors";
+  "supports";
+  "supports-linebreak";
+  "wtf"; *)
   ])
 ;;
 
