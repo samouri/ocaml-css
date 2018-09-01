@@ -16,6 +16,7 @@ type term =
   | DoubleString of string
   | Ident of string
   | Number of int
+  | Percentage of float
   | URI of string
   | HexColor of string
   | Func of expression [@@deriving show, yojson]

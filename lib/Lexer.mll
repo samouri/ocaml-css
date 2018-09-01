@@ -84,6 +84,8 @@ let css_string = css_string1 | css_string2
 let css_w = [' ' '\t' '\r' '\012']*
 let css_s = [' ' '\t' '\r' '\012']+
 let css_comment = '/' '*' [^ '*']* '*'+ ([^ '/'][^ '*']* '*'+)* '/'
+let css_number = ['+' '-']? css_num '%'?
+let css_dimension = ['+' '-']? css_num css_ident
 
 (* The CSS spec defines a grammar which allows just about any combination
    of tokens and advises against using the real grammar in appendix D. *)
@@ -102,11 +104,11 @@ rule css =
       if str.[0] = '"' then DOUBLESTRING(inner(str)) else STRING(inner(str)) 
     }
     | css_nl { next_line lexbuf; css lexbuf }
-    | ['+' '-']? css_num '%'? { donumber(Lexing.lexeme lexbuf) }
-    | ['+' '-']? css_num css_ident { split_dimension(Lexing.lexeme lexbuf) }
+    | css_number { donumber(Lexing.lexeme lexbuf) }
+    | css_dimension css_num css_ident { split_dimension(Lexing.lexeme lexbuf) }
      (* XXX Should be case-insentive? *)
     | "url(" css_w css_ident css_w ')'
-    | "url(" css_w (['!' '#' '$' '%' '&' - '~' ] | css_nonascii | css_escape) css_w ')' { uri(Lexing.lexeme lexbuf) }
+    | "url(" css_w (['!' '#' '$' '%' '&' - '~' ] | css_nonascii | css_escape)* css_w ')' { uri(Lexing.lexeme lexbuf) }
     | "U+" (HEX | '?')+ ('-' HEX+)? { UNICODE(0,0) }
     | '*' { STAR }
     | '.' { DOT }

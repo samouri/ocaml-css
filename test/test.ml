@@ -38,7 +38,9 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "colon-space"; (*
   "comma-attribute";
   "comma-selector-function";
-  "comment";
+  *)
+  (* "comment";  *)
+  (*
   "comment-in";
   "comment-url";
   "custom-media";
@@ -71,8 +73,8 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   (* "page-linebreak";
   "paged-media";
   "props";
-  "quote-escape";
-  "quoted"; *)
+  "quote-escape"; *)
+  "quoted";
   "rule";
   "rules";
   "selectors";

@@ -1,5 +1,9 @@
 open Types
 
+let hasFractionalPart (num:float): bool = match modf num with 
+  | (0., _) -> false 
+  | _ -> true;;
+
 let print_term ?(wrap=true) (term: term) = 
   let wrapFn s = if wrap then "'" ^ s  ^ "'" else s in
   let wrapDoubleFn s = if wrap then "\"" ^ s  ^ "\"" else s in
@@ -8,7 +12,8 @@ let print_term ?(wrap=true) (term: term) =
   | DoubleString str -> wrapDoubleFn str
   | Ident str -> str
   | Number i -> (string_of_int i)
-  | URI str -> wrapFn str
+  | Percentage i -> if hasFractionalPart i then (string_of_float i) ^ "%" else (string_of_int (int_of_float i)) ^ "%"
+  | URI str -> "url(" ^ str ^ ")"
   | HexColor str -> wrapFn str 
   | Dimension (num, str) -> Printf.sprintf "%f%s" num str
   | Func _ -> "TODO func"

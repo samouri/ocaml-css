@@ -47,6 +47,7 @@ terms:
 term: 
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
   | NUMBER { Number (int_of_string $1) } 
+  | PERCENTAGE { Percentage $1 } 
   | STRING { String $1 }
   | DOUBLESTRING { DoubleString $1 }
   | IDENT { Ident $1 }
