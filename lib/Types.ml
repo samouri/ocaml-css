@@ -12,7 +12,8 @@ type position = lexing_position * lexing_position [@@deriving yojson, show];;
 
 type term =
   | Dimension of float * string
-  | String of string 
+  | String of string
+  | DoubleString of string
   | Ident of string
   | Number of int
   | URI of string

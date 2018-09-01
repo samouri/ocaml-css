@@ -96,7 +96,11 @@ rule css =
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
     (* XXX String processing: strip quotes; delete backslash-newline *)
-    | css_string { STRING(inner(Lexing.lexeme lexbuf)) }
+    | css_string { 
+      (* double or single string? *)
+      let str = Lexing.lexeme lexbuf in
+      if str.[0] = '"' then DOUBLESTRING(inner(str)) else STRING(inner(str)) 
+    }
     | css_nl { next_line lexbuf; css lexbuf }
     | ['+' '-']? css_num '%'? { donumber(Lexing.lexeme lexbuf) }
     | ['+' '-']? css_num css_ident { split_dimension(Lexing.lexeme lexbuf) }

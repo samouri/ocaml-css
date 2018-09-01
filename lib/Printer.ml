@@ -2,8 +2,10 @@ open Types
 
 let print_term ?(wrap=true) (term: term) = 
   let wrapFn s = if wrap then "'" ^ s  ^ "'" else s in
+  let wrapDoubleFn s = if wrap then "\"" ^ s  ^ "\"" else s in
   match term with
   | String str -> wrapFn str
+  | DoubleString str -> wrapDoubleFn str
   | Ident str -> str
   | Number i -> (string_of_int i)
   | URI str -> wrapFn str
@@ -50,7 +52,7 @@ let positionToJson (position:position): Yojson.Safe.json = match position with
   ]
 
 let termsToJson (terms:term list) = match terms with
-  _ -> `String (String.concat "" (List.map print_term terms))
+  _ -> `String (String.concat " " (List.map print_term terms))
 ;;
 
 let ruleToJson (rule:rule): Yojson.Safe.json = match rule with

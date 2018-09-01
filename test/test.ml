@@ -67,7 +67,7 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "namespace";
   "namespace-linebreak";
   *)
-  (* "no-semi"; *)
+  "no-semi";
   (* "page-linebreak";
   "paged-media";
   "props";
