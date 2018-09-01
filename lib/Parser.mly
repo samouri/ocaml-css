@@ -35,8 +35,9 @@ ruleset:
 
 rules:
   | { [] }
-  | S* p=IDENT S* COLON S* t=terms S* e=SEMICOLON? S* r=rules
-    { (p, t, ($startpos(p), $startpos(e))) :: r } 
+  | S* star=STAR? p=IDENT S* COLON S* t=terms S* e=SEMICOLON? S* r=rules { 
+    let prefix = match star with None -> "" | Some _ -> "*" in
+    (prefix ^ p, t, ($startpos(star), $startpos(e))) :: r } 
   ;
 
 terms:

@@ -1,7 +1,6 @@
 let print = Printer.prettyPrint;;
 let astPrint = Printer.astPrint;;
 
-
 let parse (filepath:string) =
   let getLast lst = List.hd (List.rev lst) in
   let lexbuf = Lexing.from_channel (open_in filepath) in
