@@ -3,9 +3,9 @@
 %}
 
 %token RPAREN LPAREN EQUALS SEMICOLON CHILD COLOR RSQUARE LSQUARE DOT STAR EXCLAMATION CONTAINS
-%token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX
+%token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX HASH
 %token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE
-%token <string> STRING DOUBLESTRING IDENT HASH NUMBER URI CHAR FUNCTION ATKEYWORD
+%token <string> STRING DOUBLESTRING IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT
 %token <int * int> UNICODE
 %token <float> PERCENTAGE
 %token <float * string> DIMENSION
@@ -46,7 +46,7 @@ terms:
 
 term: 
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
-  | NUMBER { Number (int_of_string $1) } 
+  | NUMBER { Number $1 } 
   | PERCENTAGE { Percentage $1 } 
   | STRING { String $1 }
   | DOUBLESTRING { DoubleString $1 }
@@ -65,6 +65,9 @@ selectors:
 selector: 
   | element_name { $1 }
   | DOT i=IDENT { "." ^ i }
+  | HASH i=IDENT { "#" ^ i }
+  | s=selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
+  | s=selector LSQUARE S* ident=IDENT EQUALS str=DOUBLESTRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
   ;
 
 element_name: 

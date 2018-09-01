@@ -11,7 +11,7 @@ let print_term ?(wrap=true) (term: term) =
   | String str -> wrapFn str
   | DoubleString str -> wrapDoubleFn str
   | Ident str -> str
-  | Number i -> (string_of_int i)
+  | Number i -> i
   | Percentage i -> if hasFractionalPart i then (string_of_float i) ^ "%" else (string_of_int (int_of_float i)) ^ "%"
   | URI str -> "url(" ^ str ^ ")"
   | HexColor str -> wrapFn str 

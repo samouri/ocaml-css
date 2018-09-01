@@ -74,7 +74,7 @@ let css_escape = css_unicode | '\\' [ ' ' - '~' ] (* \200-\4177777 omitted *)
 let css_nonascii = [^ '\000' - '\255' ]
 let css_nmstart = ['a' - 'z' 'A' - 'Z' ] | css_nonascii | css_unicode
 let css_nmchar = ['a' - 'z' 'A' - 'Z' '0' - '9' '-' ] | css_nonascii | css_unicode
-let css_name = css_nmchar +
+(* let css_name = css_nmchar + *)
 let css_ident = css_nmstart css_nmchar*
 let css_num = ['0' - '9']+ | ['0' - '9']* '.' ['0' - '9']+
 let css_nl = '\n' | '\r' '\n' | '\r' | '\012'
@@ -94,7 +94,7 @@ rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
     | "<!--" | "-->" | css_comment { css lexbuf }
-    | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) }
+    (* | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) } *)
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
     (* XXX String processing: strip quotes; delete backslash-newline *)
@@ -112,6 +112,7 @@ rule css =
     | "U+" (HEX | '?')+ ('-' HEX+)? { UNICODE(0,0) }
     | '*' { STAR }
     | '.' { DOT }
+    | '#' { HASH }
     | ',' { COMMA }
     | '+' { PLUS }
     | '-' { MINUS }

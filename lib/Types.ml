@@ -15,7 +15,7 @@ type term =
   | String of string
   | DoubleString of string
   | Ident of string
-  | Number of int
+  | Number of string
   | Percentage of float
   | URI of string
   | HexColor of string

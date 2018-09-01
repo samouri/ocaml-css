@@ -35,8 +35,9 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   (* "at-namespace";
   "charset";
   "charset-linebreak"; *)
-  "colon-space"; (*
+  "colon-space"; 
   "comma-attribute";
+  (*
   "comma-selector-function";
   *)
   (* "comment";  *)
