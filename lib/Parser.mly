@@ -2,6 +2,7 @@
   open Types
 %}
 
+%token EOF 
 %token RPAREN LPAREN EQUALS SEMICOLON CHILD COLOR RSQUARE LSQUARE DOT STAR EXCLAMATION CONTAINS
 %token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX HASH
 %token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE
@@ -12,7 +13,6 @@
 %token <char> ERROR
 %token INVALID
 %token IMPORT_SYM IMPORTANT_SYM PAGE_SYM MEDIA_SYM CHARSET_SYM
-%token EOF
 
 %start <Types.rulesets> stylesheet	/* the entry point */
 %%
@@ -20,27 +20,26 @@
 /* stylesheet */
 stylesheet:
   | EOF { None }
-  | rulesets EOF { Some $1 }
+  | r=rulesets EOF { Some r }
   ;
 
 rulesets:
- | EOF { [] }
- | S* r=ruleset S* { [ r ] }
- | S* r=ruleset S* rs=rulesets S* { r :: rs }
+ | S* r=ruleset { [ r ] }
+ | S* r=ruleset rs=rulesets { r :: rs }
  ;
 
 ruleset:
-  | s=selectors S* LBRACE S* r=rules e=RBRACE { (s , r, ($startpos(s), $endpos(e))) }
+  | s=selectors S* LBRACE S* r=rule* S* e=RBRACE { (s , r, ($startpos(s), $endpos(e))) }
   ;
 
-rules:
-  | { [] }
-  | S* star=STAR? p=IDENT S* COLON S* t=term_w* S* e=SEMICOLON? S* r=rules { 
+rule:
+  | S* star=STAR? p=IDENT S* COLON t=term_w+ S* e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
-    (prefix ^ p, t, ($startpos(star), $startpos(e))) :: r } 
+    (prefix ^ p, t, ($startpos(star), $startpos(e))) 
+    } 
   ;
 
-term_w: S* term S* { $2 }
+term_w: S* t=term S* { t }
   ; 
 
 term: 
@@ -55,19 +54,26 @@ term:
   ;
 
 selectors: 
-  | s=selector S* { [ s ] } 
-  | s1=selector S+ s2=selectors { match s2 with hd::tl -> (s1 ^ " " ^ hd) :: tl | [] -> [ s1 ] } 
-  | s1=selector s2=selector { [ s1 ^ s2 ] }
-  | s=selector S* COMMA S* ss=selectors S* { s :: ss } 
- ; 
- 
+  | s=selector S* { [ s ] }
+  | s=selector S* COMMA S* ss=selectors S* { s :: ss }
+  ; 
+
+(* simple_selector [ combinator selector | S+ [ combinator? selector ]? ]? *)
 selector: 
-  | element_name { $1 }
-  | DOT i=IDENT { "." ^ i }
-  | HASH i=IDENT { "#" ^ i }
-  | s=selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
-  | s=selector LSQUARE S* ident=IDENT EQUALS str=DOUBLESTRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
+  | simple_selector { $1 }
+  | s1=selector S+ s2=simple_selector { s1 ^ " " ^ s2 }
+  | s1=selector s2=simple_selector { s1 ^ s2 }
+  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
+  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=DOUBLESTRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
   ;
+
+simple_selector:
+  | element_name { $1 }
+  | dotclass { $1 }
+  | hash { $1 }
+
+dotclass: DOT i=IDENT { "." ^ i }
+hash: HASH i=IDENT { "#" ^ i }
 
 element_name: 
   | IDENT { $1 }

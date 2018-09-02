@@ -134,5 +134,5 @@ rule css =
     | css_s { S }
     | "~=" { CONTAINS }
     | "|=" { PREFIX }
-    | _ { ERROR((Lexing.lexeme lexbuf).[0]) }
     | eof { EOF }
+    | _ { ERROR((Lexing.lexeme lexbuf).[0]) }

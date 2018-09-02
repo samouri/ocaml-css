@@ -99,7 +99,7 @@ let astPrint (rulesets:rulesets): string =
   Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson rulesets);;
 
 let prettyPrint (rulesets:rulesets) = match rulesets with
-  | None -> "There is no css!"
+  | None -> "\n"
   | Some r -> (r
     |> List.map (fun ruleset -> print_ruleset ruleset)
     |> String.concat "\n\n") ^ "\n"
