@@ -35,15 +35,13 @@ ruleset:
 
 rules:
   | { [] }
-  | S* star=STAR? p=IDENT S* COLON S* t=terms S* e=SEMICOLON? S* r=rules { 
+  | S* star=STAR? p=IDENT S* COLON S* t=term_w* S* e=SEMICOLON? S* r=rules { 
     let prefix = match star with None -> "" | Some _ -> "*" in
     (prefix ^ p, t, ($startpos(star), $startpos(e))) :: r } 
   ;
 
-terms:
-  | S* t=term S* { [ t ] }
-  | S* t=term S* ts=terms S* { t :: ts }
- ; 
+term_w: S* term S* { $2 }
+  ; 
 
 term: 
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
