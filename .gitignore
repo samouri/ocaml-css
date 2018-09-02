@@ -13,3 +13,5 @@ esy.lock
 Parser.mli
 Parser.ml
 Lexer.ml
+Parser.automaton
+Parser.conflicts
