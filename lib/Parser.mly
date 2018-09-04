@@ -19,13 +19,11 @@
 
 /* stylesheet */
 stylesheet:
-  | EOF { None }
   | r=rulesets EOF { Some r }
   ;
 
 rulesets:
- | S* r=ruleset { [ r ] }
- | S* r=ruleset rs=rulesets { r :: rs }
+ | S* r=ruleset* { r }
  ;
 
 ruleset:
