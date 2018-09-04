@@ -29,7 +29,17 @@ and expression = statement list [@@deriving show, yojson]
 ;;
 
 type selectors = string list [@@deriving show, yojson];;
+type comment = string * position [@@deriving show, yojson];;
+
 
 type rule = string * (term list) * position [@@deriving show, yojson];;
-type ruleset = selectors * (rule list) * position [@@deriving show, yojson];;
-type rulesets = (ruleset list) option [@@deriving show, yojson];;
+
+type ruleset_item = 
+  | Rule of rule 
+  | RComment of comment 
+  [@@deriving show, yojson];;
+
+type ruleset = selectors * (ruleset_item list) * position [@@deriving show, yojson];;
+type stylesheet_item = Ruleset of ruleset | SComment of comment [@@deriving show, yojson];; 
+
+type stylesheet = (stylesheet_item list) [@@deriving show, yojson];;

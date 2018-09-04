@@ -93,7 +93,7 @@ let css_dimension = ['+' '-']? css_num css_ident
 rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
-    | "<!--" | "-->" | css_comment { css lexbuf }
+    | "<!--" | "-->" | css_comment { COMMENT( Lexing.lexeme lexbuf ) }
     (* | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) } *)
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
