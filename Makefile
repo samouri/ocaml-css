@@ -8,8 +8,8 @@ lexer:
 	@ocamllex -q ./lib/Lexer.mll
 
 parser:
-	#@esy menhir --trace --explain --dump ./lib/Parser.mly
-	@esy menhir ./lib/Parser.mly
+	@esy menhir --trace --explain --dump ./lib/Parser.mly
+	#@esy menhir ./lib/Parser.mly
 
 clean:
 	rm ./lib/Lexer.ml ./lib/Parser.mli ./lib/Parser.ml

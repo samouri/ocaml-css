@@ -31,16 +31,27 @@ let print_expr (expressions: term list) =
   |> String.concat " "
   ;;
 
-let print_rules (rules: rule list) =
+let print_comment ((comment, _):comment) = comment;;
+
+let print_rule ((prop, expr, _):rule) = Printf.sprintf "  %s: %s;" prop (print_expr expr);;
+
+let print_ruleset_item (ritem: ruleset_item)= match ritem with
+  | RComment c -> "  " ^ print_comment c
+  | Rule r -> print_rule r;;
+
+let print_rules (rules: ruleset_item list) =
   rules
-  |> List.map (fun (prop, expr,_) -> Printf.sprintf "  %s: %s;" prop (print_expr expr))
+  |> List.map print_ruleset_item
   |> String.concat "\n"
 ;;
 
+
 let print_selectors selectors = String.concat ",\n" selectors;;
 
-let print_ruleset (selectors, rules, _) =
-  Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
+let print_stylesheet_item  = function 
+  | SComment c -> print_comment c
+  | Ruleset (selectors, rules, _) ->
+    Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
   ;;
 
 let positionToJson (position:position): Yojson.Safe.json = match position with
@@ -60,8 +71,17 @@ let termsToJson (terms:term list) = match terms with
   _ -> `String (String.concat " " (List.map print_term terms))
 ;;
 
-let ruleToJson (rule:rule): Yojson.Safe.json = match rule with
-   | (str, terms, pos) -> `Assoc [ 
+let commentToJson ((comment, pos):comment) = 
+  `Assoc [ 
+     ("type", `String "comment");
+     ("comment", `String comment );
+     ("position", positionToJson pos);
+    ]
+ ;;
+
+let ruleToJson (rule:ruleset_item): Yojson.Safe.json = match rule with
+   | RComment c -> commentToJson c
+   | Rule (str, terms, pos) -> `Assoc [ 
      ("type", `String "declaration");
      ("property", `String str );
      ("value", termsToJson terms );
@@ -69,38 +89,39 @@ let ruleToJson (rule:rule): Yojson.Safe.json = match rule with
     ]
  ;;
 
-let rulesetToJson (ruleset:ruleset): Yojson.Safe.json = match ruleset with 
- | (selectors, rules, pos) -> `Assoc [
+let rulesetToJson (ruleset:stylesheet_item): Yojson.Safe.json = match ruleset with
+ | SComment c -> commentToJson c
+ | Ruleset (selectors, rules, pos ) ->
+  `Assoc [
    ("type", `String "rule");
    ("selectors", `List (List.map (fun s -> `String s) selectors ));
    ("declarations", `List (List.map ruleToJson rules));
    ("position", positionToJson pos);
- ]
+  ]
 ;;
 
-let rec rulesetsToJson (rulesets:rulesets): Yojson.Safe.json =  match rulesets with 
- | None | Some []-> `List []
- | Some (hd::tl) -> `List ((rulesetToJson hd) :: (List.map rulesetToJson tl))
+let rec rulesetsToJson (stylesheet:stylesheet): Yojson.Safe.json =  match stylesheet with 
+ | [] -> `List []
+ | (hd::tl) -> `List ((rulesetToJson hd) :: (List.map rulesetToJson tl))
  ;;
 
-let stylesheetToJson (rulesets:rulesets):Yojson.Safe.json =
+let stylesheetToJson (stylesheet:stylesheet):Yojson.Safe.json =
   `Assoc [
     ("type", `String "stylesheet");
     ("stylesheet", 
       `Assoc [ (
-        "rules", (rulesetsToJson rulesets)
+        "rules", (rulesetsToJson stylesheet)
       )]
     )
   ]
 ;;
 
 
-let astPrint (rulesets:rulesets): string = 
+let astPrint (rulesets:stylesheet): string = 
   Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson rulesets);;
 
-let prettyPrint (rulesets:rulesets) = match rulesets with
-  | None -> "\n"
-  | Some r -> (r
-    |> List.map (fun ruleset -> print_ruleset ruleset)
+let prettyPrint (stylesheet:stylesheet) =
+  (stylesheet
+    |> List.map (fun ruleset -> print_stylesheet_item ruleset)
     |> String.concat "\n\n") ^ "\n"
 ;;

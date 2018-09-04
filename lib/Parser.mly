@@ -14,26 +14,31 @@
 %token INVALID
 %token IMPORT_SYM IMPORTANT_SYM PAGE_SYM MEDIA_SYM CHARSET_SYM
 
-%start <Types.rulesets> stylesheet	/* the entry point */
+%start <Types.stylesheet> stylesheet	/* the entry point */
 %%
 
 /* stylesheet */
 stylesheet:
-  | r=rulesets EOF { Some r }
+  | r=rulesets EOF { r }
   ;
 
 rulesets:
- | S* r=ruleset* { r }
+ | r=ruleset* { r }
  ;
 
 ruleset:
-  | s=selectors S* LBRACE S* r=rule* S* e=RBRACE { (s , r, ($startpos(s), $endpos(e))) }
+  | c=COMMENT { SComment (c, $loc) }
+  | s=selectors S* LBRACE S* r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
+  (* | error { SComment ("error found",$loc) } *)
   ;
 
+rule_w: S* r=rule S* { r }; 
 rule:
-  | S* star=STAR? p=IDENT S* COLON t=term_w+ S* e=SEMICOLON? { 
+ (* | error { RComment (Lexing.lexeme lexbuf, $loc) }  *)
+  | c=COMMENT { RComment (c, $loc) }
+  | star=STAR? p=IDENT S* COLON t=term_w+ S* e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
-    (prefix ^ p, t, ($startpos(star), $startpos(e))) 
+    Rule (prefix ^ p, t, ($startpos(star), $startpos(e))) 
     } 
   ;
 
