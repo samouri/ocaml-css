@@ -1,5 +1,6 @@
 (executable
   (name css)
+  (public_name css-parse)
   (libraries lib cmdliner yojson)
   (preprocess (pps ppx_deriving.std ppx_deriving_yojson))
 )

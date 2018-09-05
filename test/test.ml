@@ -25,8 +25,8 @@ let get_test_for_dir dir =
   let expectedStr = load_file (test_path ^ "/" ^ dir ^ "/output.css") in
   let expectedAst = Yojson.Safe.prettify (load_file (test_path ^ "/" ^ dir ^ "/ast.json")) in
   dir >:: (fun _ -> (
-    let actualAst = astPrint (parse inputStr filename) in
-    let actualStr = print (parse inputStr filename) in
+    let actualAst = astPrint (parse inputStr) in
+    let actualStr = print (parse inputStr) in
     
     assert_equal ~msg:"pretty-print" ~printer:(fun x -> x) expectedStr actualStr;
     assert_equal ~msg:"ast-print" ~printer:(fun x -> x) expectedAst actualAst;

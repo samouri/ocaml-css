@@ -1,5 +1,6 @@
 (executable
   (name Index)
-  (public_name css-parse)
-  (libraries lib)
+  (public_name index.js)
+  (libraries lib js_of_ocaml)
+  (preprocess (pps js_of_ocaml-ppx))
 )
