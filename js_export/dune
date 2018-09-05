@@ -1,0 +1,5 @@
+(executable
+  (name Index)
+  (public_name css-parse)
+  (libraries lib)
+)

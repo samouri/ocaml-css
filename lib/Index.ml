@@ -1,9 +1,9 @@
 let print = Printer.prettyPrint;;
 let astPrint = Printer.astPrint;;
 
-let parse (filepath:string) =
+let parse (source: string) (filepath: string) =
   let getLast lst = List.hd (List.rev lst) in
-  let lexbuf = Lexing.from_channel (open_in filepath) in
+  let lexbuf = Lexing.from_string source in
   (lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = getLast (String.split_on_char '/' filepath) } );
   try
     Parser.stylesheet Lexer.css lexbuf
@@ -15,5 +15,3 @@ let parse (filepath:string) =
     (print_endline (Printf.sprintf "Error at location (%d:%d) with character: %s" line cnum tok));
     raise exn
   )
-
-let stylesheetToJson = Printer.stylesheetToJson;;
