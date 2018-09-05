@@ -1,15 +1,19 @@
 {
-  "name": "css",
+  "name": "css-parse",
   "version": "0.1.0",
   "description": "Parse CSS",
   "license": "MIT",
   "esy": {
     "build": [
-      "dune build"
+      "dune build",
+      "dune build js_export/Index.bc.js"
     ],
     "install": [
       "dune install --prefix=#{self.install}"
     ],
+    "release": {
+      "releasedBinaries": [ "css-parse" ]
+    },
     "buildsInSource": "_build"
   },
   "resolutions": {
@@ -20,12 +24,12 @@
     "@esy-ocaml/esy-installer": "^0.0.0",
     "@opam/jbuilder": "*",
     "@opam/lambda-term": "*",
-    "@opam/lwt": "4.0.0",
     "@opam/menhir": "20180703",
     "@opam/cmdliner": "1.0.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.1",
     "@opam/yojson": "1.4.0",
+    "@opam/js_of_ocaml-compiler": "3.2.1",
     "@opam/ounit": "2.0.8"
   },
   "peerDependencies": {
