@@ -44,7 +44,7 @@ let load_file f =
   ;;
 
 let run file output_str =
-  let parsed = parse (load_file file) in
+  let parsed = parse ~fp:file (load_file file) in
   let output_flag = output_of_str output_str in (* learn how to make the proper CMDLiner converter for this *)
   let output = if output_flag = Pretty then print parsed else astPrint parsed
   in

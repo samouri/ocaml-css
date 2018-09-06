@@ -1,12 +1,10 @@
 let print = Printer.prettyPrint;;
 let astPrint = Printer.astPrint;;
 
-let parse  (source: string) =
-  (print_string source);
-  (print_endline ("HELLO"));
+let parse  ?(fp="") (source: string) =
   let getLast lst = List.hd (List.rev lst) in
   let lexbuf = Lexing.from_string source in
-  (lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = getLast (String.split_on_char '/' "") } );
+  (lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = getLast (String.split_on_char '/' fp) } );
   try
     Parser.stylesheet Lexer.css lexbuf
   with exn -> (
