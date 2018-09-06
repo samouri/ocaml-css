@@ -5,14 +5,14 @@
   "license": "MIT",
   "esy": {
     "build": [
-      "dune build js_export/Index.bc.js",
-      "dune build"
+      "dune build",
+      "dune build --profile release js_export/Index.bc.js"
     ],
     "install": [
       "dune install --prefix=#{self.install}"
     ],
     "release": {
-      "releasedBinaries": [ "css" ]
+      "releasedBinaries": [ "css-parse", "index.js" ]
     },
     "buildsInSource": "_build"
   },
