@@ -15,3 +15,5 @@ Parser.ml
 Lexer.ml
 Parser.automaton
 Parser.conflicts
+.cache
+dist
