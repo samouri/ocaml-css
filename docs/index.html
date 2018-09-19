@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <script src="./index.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+  </head>
+  <body>
+    <h1> css-explorer </h1> 
+    <div class="explorer-area">
+      <textarea class="css-input"> 
+    </textarea>
+    <textarea class="css-ast"></textarea>
+    </div>
+  </body>
+  <script>
+    const inputStartValue = `tobi {
+  name: 'tobi';
+  age: 2;
+}
+
+loki {
+  name: 'loki';
+  age: 1;
+}`;
+    const cssInput = document.getElementsByClassName("css-input")[0];
+    const cssAst = document.getElementsByClassName("css-ast")[0];
+    cssInput.value = inputStartValue;
+    cssAst.value = window.astPrint(window.parse(inputStartValue));
+    
+    const cssCodeMirror = window.CodeMirror.fromTextArea(cssInput, {
+      mode: 'css',
+      lineNumbers: true,
+    });
+
+    const astCodeMirror = window.CodeMirror.fromTextArea(cssAst, {
+      mode: { name: 'javascript', json: true },
+      lineNumbers: true,
+    });
+
+    cssInput.oninput = e => {
+      let val = e.target.value;
+      try { 
+        astCodeMirror.setValue( window.astPrint(window.parse(val)));
+      } catch( e ) {
+        console.log(e);
+        astCodeMirror.setValue("ERROR");
+      }
+      astCodeMirror.refresh();
+    }; 
+  </script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      margin-top: 5px;
+      padding-top: 0;
+    }
+
+    h1 {
+      padding: 0;
+      margin: 0;
+      padding-bottom: 15px;
+      font-size: 32px;
+    }
+
+    .explorer-area {
+      display: flex;
+      flex-grow: 1;
+    }
+
+    .css-input, .css-ast {
+      width: 50%;
+      font-size: 18px;
+    }
+
+    .CodeMirror {
+      height: 100%;
+      width: 50%;
+    }
+  </style>
+</html>
