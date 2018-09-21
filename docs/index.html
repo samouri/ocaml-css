@@ -36,8 +36,8 @@ loki {
       lineNumbers: true,
     });
 
-    cssInput.oninput = e => {
-      let val = e.target.value;
+    cssCodeMirror.on('change', e => {
+      const val = cssCodeMirror.getValue();
       try { 
         astCodeMirror.setValue( window.astPrint(window.parse(val)));
       } catch( e ) {
@@ -45,7 +45,8 @@ loki {
         astCodeMirror.setValue("ERROR");
       }
       astCodeMirror.refresh();
-    }; 
+    }); 
+
   </script>
   <style>
     body {
