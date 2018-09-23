@@ -1,16 +1,16 @@
-# css ocaml
+# css-parse
 [![Build Status](https://travis-ci.org/samouri/ocaml-css.svg?branch=master)](https://travis-ci.org/samouri/ocaml-css)
 
-parse, detect errors, and pretty-print css natively in OCaml.
+parse, detect errors, and pretty-print css directly in terminal, natively in OCaml, or even from JavaScript.
 
 **this is under active development, please do not use yet**
 
-## Overview
+### Overview
 
-`css-parse` is written in OCaml and utilized ocamllex and [menhir](http://gallium.inria.fr/~fpottier/menhir/manual.html) for lexer and parser generation.
-We generate a binary as well 
+`css-parse` is written in OCaml and utilizes ocamllex and [menhir](http://gallium.inria.fr/~fpottier/menhir/manual.html) for lexer and parser generation.
+We generate a binary as well that can be run from the command line.
 
-## Development
+### Development
 
 You'll need to install esy as well as mehir.
 To bootstrap the project run:
