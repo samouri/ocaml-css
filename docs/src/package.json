@@ -1,0 +1,23 @@
+{
+  "name": "css-parse-explorer",
+  "version": "1.0.0",
+  "description": "a site to explore css-parse built in the same vein as astexplorer.net",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+	  "start": "parcel index.html",
+	  "build": "rm dist/* && parcel build index.html && cp dist/* ..",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samouri/ocaml-css/tree/master/docs"
+  },
+  "author": "samouri",
+  "license": "MIT",
+  "dependencies": {
+    "parcel": "^1.9.7"
+  }
+}
