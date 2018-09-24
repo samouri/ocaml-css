@@ -7,7 +7,7 @@ parse, detect errors, and pretty-print css directly in terminal, natively in OCa
 
 ### Overview
 
-`css-parse` is written in OCaml and utilizes ocamllex and [menhir](http://gallium.inria.fr/~fpottier/menhir/manual.html) for lexer and parser generation.
+`css-parse` is written in OCaml and utilizes ocamllex and [menhir](http://gallium.inria.fr/~fpottier/menhir/manual.html) for lexer and parser generation.  A pretty good introduction and explanation of the tools can be found in [Real World Ocaml](https://v1.realworldocaml.org/v1/en/html/parsing-with-ocamllex-and-menhir.html).
 We generate a binary as well that can be run from the command line.
 
 ### Development
@@ -21,7 +21,7 @@ make
 
 ### Testing Done
 
-In order to test this module, I've stolen all of the test cases from the very well tested [reworkcss](https://github.com/reworkcss/css).
+In order to test this module, I've stolen test cases from the very well tested [reworkcss](https://github.com/reworkcss/css).
 All of the test cases are run through OUnit and can be executed with:
 
 ```
