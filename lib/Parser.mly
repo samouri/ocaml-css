@@ -28,21 +28,20 @@ rulesets:
 
 ruleset:
   | c=COMMENT { SComment (c, $loc) }
-  | s=selectors S* LBRACE S* r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
+  | s=selectors S? LBRACE S? r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
   (* | error { SComment ("error found",$loc) } *)
   ;
 
-rule_w: S* r=rule S* { r }; 
+rule_w: S? r=rule S? { r }; 
 rule:
- (* | error { RComment (Lexing.lexeme lexbuf, $loc) }  *)
   | c=COMMENT { RComment (c, $loc) }
-  | star=STAR? p=IDENT S* COLON t=term_w+ S* e=SEMICOLON? { 
+  | star=STAR? p=IDENT S? COLON t=term_w+ S? e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
     Rule (prefix ^ p, t, ($startpos(star), $startpos(e))) 
     } 
   ;
 
-term_w: S* t=term S* { t }
+term_w: S? t=term S? { t }
   ; 
 
 term: 
@@ -57,17 +56,17 @@ term:
   ;
 
 selectors: 
-  | s=selector S* { [ s ] }
-  | s=selector S* COMMA S* ss=selectors S* { s :: ss }
+  | s=selector S? { [ s ] }
+  | s=selector S? COMMA S? ss=selectors { s :: ss }
   ; 
 
 (* simple_selector [ combinator selector | S+ [ combinator? selector ]? ]? *)
 selector: 
   | simple_selector { $1 }
-  | s1=selector S+ s2=simple_selector { s1 ^ " " ^ s2 }
+  | s1=selector S s2=simple_selector { s1 ^ " " ^ s2 }
   | s1=selector s2=simple_selector { s1 ^ s2 }
-  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
-  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=DOUBLESTRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
+  | s=simple_selector LSQUARE S? ident=IDENT EQUALS str=STRING S? RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
+  | s=simple_selector LSQUARE S? ident=IDENT EQUALS str=DOUBLESTRING S? RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
   ;
 
 simple_selector:
