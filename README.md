@@ -12,7 +12,7 @@ We generate a binary as well that can be run from the command line.
 
 ### Development
 
-You'll need to install esy as well as mehir.
+You'll need to install esy as well as menhir.
 To bootstrap the project run:
 ```
 esy install
