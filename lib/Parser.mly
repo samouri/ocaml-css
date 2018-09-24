@@ -28,22 +28,19 @@ rulesets:
 
 ruleset:
   | c=COMMENT { SComment (c, $loc) }
-  | s=selectors S? LBRACE S? r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
-  (* | error { SComment ("error found",$loc) } *)
+  | s=selectors LBRACE S? r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
   ;
 
-rule_w: S? r=rule S? { r }; 
+rule_w: r=rule S? { r }; 
 rule:
   | c=COMMENT { RComment (c, $loc) }
-  | star=STAR? p=IDENT S? COLON t=term_w+ S? e=SEMICOLON? { 
+  | star=STAR? p=IDENT S? COLON S? t=term_w+ e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
     Rule (prefix ^ p, t, ($startpos(star), $startpos(e))) 
     } 
   ;
 
-term_w: S? t=term S? { t }
-  ; 
-
+term_w: t=term S? { t }; 
 term: 
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
   | NUMBER { Number $1 } 
