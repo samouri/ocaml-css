@@ -4,9 +4,9 @@
     <link rel="stylesheet" href="lib/codemirror.css">
   </head>
   <body>
-    <h1> css-explorer </h1> 
+    <h1> css-parse </h1>
     <div class="explorer-area">
-      <textarea class="css-input"> 
+      <textarea class="css-input">
     </textarea>
     <textarea class="css-ast"></textarea>
     </div>
@@ -25,7 +25,7 @@ loki {
     const cssAst = document.getElementsByClassName("css-ast")[0];
     cssInput.value = inputStartValue;
     cssAst.value = window.astPrint(window.parse(inputStartValue));
-    
+
     const cssCodeMirror = window.CodeMirror.fromTextArea(cssInput, {
       mode: 'css',
       lineNumbers: true,
@@ -38,14 +38,14 @@ loki {
 
     cssCodeMirror.on('change', e => {
       const val = cssCodeMirror.getValue();
-      try { 
+      try {
         astCodeMirror.setValue( window.astPrint(window.parse(val)));
       } catch( e ) {
         console.log(e);
         astCodeMirror.setValue("ERROR");
       }
       astCodeMirror.refresh();
-    }); 
+    });
 
   </script>
   <style>
