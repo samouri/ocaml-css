@@ -1,25 +1,31 @@
 <html>
   <head>
-    <script src="./index.js"></script>
+    <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="./index.js"></script>
   </head>
   <body>
-    <h1> css-parse </h1>
+    <div class="top-background-wrapper"><div class="top-background"></div></div>
+    <section class="header">
+      <a href="/docs"> Docs </a>
+      <a href="https://github.com/samouri/ocaml-css"> GitHub </a>
+    </section>
+    <h1 class="page-title"> css-parse </h1>
+    <h2 class="page-subtitle"> Parse and print your css in OCaml and JavaScript </h1>
     <div class="explorer-area">
       <textarea class="css-input">
+      <textarea class="css-ast"></textarea>
     </textarea>
-    <textarea class="css-ast"></textarea>
     </div>
   </body>
   <script>
-    const inputStartValue = `tobi {
-  name: 'tobi';
-  age: 2;
+    const inputStartValue = `h1 {
+  font-size: 12px;
+  font-family: OCaml-Times;
 }
 
-loki {
-  name: 'loki';
-  age: 1;
+.floated {
+  float: right;
 }`;
     const cssInput = document.getElementsByClassName("css-input")[0];
     const cssAst = document.getElementsByClassName("css-ast")[0];
@@ -45,37 +51,6 @@ loki {
         astCodeMirror.setValue("ERROR");
       }
       astCodeMirror.refresh();
-    });
-
+    }); 
   </script>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      margin-top: 5px;
-      padding-top: 0;
-    }
-
-    h1 {
-      padding: 0;
-      margin: 0;
-      padding-bottom: 15px;
-      font-size: 32px;
-    }
-
-    .explorer-area {
-      display: flex;
-      flex-grow: 1;
-    }
-
-    .css-input, .css-ast {
-      width: 50%;
-      font-size: 18px;
-    }
-
-    .CodeMirror {
-      height: 100%;
-      width: 50%;
-    }
-  </style>
 </html>
