@@ -1,5 +1,6 @@
 <html>
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="lib/codemirror.css">
     <script src="./index.js"></script>
@@ -12,12 +13,33 @@
     </section>
     <h1 class="page-title"> css-parse </h1>
     <h2 class="page-subtitle"> Parse and print your css in OCaml and JavaScript </h2>
+    <div class="explorer-area-header">
+      <span> css goes in... </span>
+      <span> json comes out </span>
+    </div>
     <div class="explorer-area">
       <textarea class="css-input">
       <textarea class="css-ast"></textarea>
     </textarea>
     </div>
+    <div class="brag-area">
+      <div class="brag">
+        <span class="brag-title"><b>No competition</b></span>
+        <span class="brag-content"> If you want to parse css in OCaml, you don't have many options. you are stuck with this library.</span> 
+      </div>
+      <div class="brag">
+        <span class="brag-title"><b>Blazing fast 🔥🔥🔥</b></span>
+        <span class="brag-content">faster than alternatives in OCaml. once again, you don't have options.<br> (actual benchmarks coming soon) </span> 
+      </div>
+    </div>
+    <div class="call-to-action">
+      <img src="./images/camel-train.png">
+      <button type="button"> Get started </button>
+    </div>
   </body>
+  <footer> 
+    <span> Made in Brooklyn</span> 
+  </footer>
   <script>
     const inputStartValue = `h1 {
   font-size: 12px;
@@ -40,6 +62,8 @@
     const astCodeMirror = window.CodeMirror.fromTextArea(cssAst, {
       mode: { name: 'javascript', json: true },
       lineNumbers: true,
+      lineWrapping: true,
+      readOnly: true,
     });
 
     cssCodeMirror.on('change', e => {
