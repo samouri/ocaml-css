@@ -31,7 +31,7 @@ let print_expr (expressions: term list) =
   |> String.concat " "
   ;;
 
-let print_comment ((comment, _):comment) = comment;;
+let print_comment ((comment, _):comment) = "/*" ^ comment ^ "*/";;
 
 let print_rule ((prop, expr, _):rule) = Printf.sprintf "  %s: %s;" prop (print_expr expr);;
 
