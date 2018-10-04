@@ -36,10 +36,10 @@ type rule = string * (term list) * position [@@deriving show, yojson];;
 
 type ruleset_item = 
   | Rule of rule 
-  | RComment of comment 
+  | Comment of comment 
   [@@deriving show, yojson];;
 
 type ruleset = selectors * (ruleset_item list) * position [@@deriving show, yojson];;
-type stylesheet_item = Ruleset of ruleset | SComment of comment [@@deriving show, yojson];; 
+type stylesheet_item = Ruleset of ruleset | Comment of comment [@@deriving show, yojson];; 
 
 type stylesheet = (stylesheet_item list) [@@deriving show, yojson];;

@@ -54,6 +54,9 @@ let atkeyword lexeme =
   | s -> ATKEYWORD(tail1 s)
   end
 
+let last_comments = ref [];;
+let comments () = List.rev !last_comments;;
+
 let decode_unicode s =
   let l = String.length s in
   let rv = int_of_string ("0x" ^ (String.sub s 1 (l-1))) in
@@ -93,7 +96,11 @@ let css_dimension = ['+' '-']? css_num css_ident
 rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
-    | "<!--" | "-->" | css_comment { COMMENT( Lexing.lexeme lexbuf ) }
+    | "<!--" | "-->" | css_comment { 
+      let newComment = (Lexing.lexeme lexbuf, (Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf)) in
+      last_comments := newComment :: !last_comments; 
+      css lexbuf
+    }
     (* | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) } *)
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }

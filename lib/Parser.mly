@@ -27,13 +27,11 @@ rulesets:
  ;
 
 ruleset:
-  | c=COMMENT { SComment (c, $loc) }
   | s=selectors LBRACE S? r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
   ;
 
 rule_w: r=rule S? { r }; 
 rule:
-  | c=COMMENT { RComment (c, $loc) }
   | star=STAR? p=IDENT S? COLON S? t=term_w+ e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
     Rule (prefix ^ p, t, ($startpos(star), $startpos(e))) 
