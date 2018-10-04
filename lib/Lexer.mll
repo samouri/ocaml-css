@@ -56,6 +56,7 @@ let atkeyword lexeme =
 
 let last_comments = ref [];;
 let comments () = List.rev !last_comments;;
+let clearComments () = last_comments := [];;
 
 let decode_unicode s =
   let l = String.length s in

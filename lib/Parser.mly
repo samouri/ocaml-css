@@ -19,7 +19,7 @@
 
 /* stylesheet */
 stylesheet:
-  | r=rulesets EOF { r }
+  | r=rulesets S* EOF { r }
   ;
 
 rulesets:
@@ -27,7 +27,7 @@ rulesets:
  ;
 
 ruleset:
-  | s=selectors LBRACE S? r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
+  | s=selectors LBRACE S* r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
   ;
 
 rule_w: r=rule S? { r }; 
