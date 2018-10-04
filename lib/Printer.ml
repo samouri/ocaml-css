@@ -36,7 +36,7 @@ let print_comment ((comment, _):comment) = comment;;
 let print_rule ((prop, expr, _):rule) = Printf.sprintf "  %s: %s;" prop (print_expr expr);;
 
 let print_ruleset_item (ritem: ruleset_item)= match ritem with
-  | RComment c -> "  " ^ print_comment c
+  | Comment c -> "  " ^ print_comment c
   | Rule r -> print_rule r;;
 
 let print_rules (rules: ruleset_item list) =
@@ -49,7 +49,7 @@ let print_rules (rules: ruleset_item list) =
 let print_selectors selectors = String.concat ",\n" selectors;;
 
 let print_stylesheet_item  = function 
-  | SComment c -> print_comment c
+  | Comment c -> print_comment c
   | Ruleset (selectors, rules, _) ->
     Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
   ;;
@@ -80,7 +80,7 @@ let commentToJson ((comment, pos):comment) =
  ;;
 
 let ruleToJson (rule:ruleset_item): Yojson.Safe.json = match rule with
-   | RComment c -> commentToJson c
+   | Comment c -> commentToJson c
    | Rule (str, terms, pos) -> `Assoc [ 
      ("type", `String "declaration");
      ("property", `String str );
@@ -90,7 +90,7 @@ let ruleToJson (rule:ruleset_item): Yojson.Safe.json = match rule with
  ;;
 
 let rulesetToJson (ruleset:stylesheet_item): Yojson.Safe.json = match ruleset with
- | SComment c -> commentToJson c
+ | Comment c -> commentToJson c
  | Ruleset (selectors, rules, pos ) ->
   `Assoc [
    ("type", `String "rule");
