@@ -54,6 +54,11 @@ let atkeyword lexeme =
   | s -> ATKEYWORD(tail1 s)
   end
 
+(* remove first two characters as well as the last two *)
+let extractComment (comment:string) : string = 
+  String.sub comment 2 ((String.length comment) - 4);;
+  
+
 let last_comments = ref [];;
 let comments () = List.rev !last_comments;;
 let clearComments () = last_comments := [];;
@@ -98,7 +103,8 @@ rule css =
   parse
     (* Skip over CDO, CDC, and comments. *)
     | "<!--" | "-->" | css_comment { 
-      let newComment = (Lexing.lexeme lexbuf, (Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf)) in
+      let commentText = extractComment (Lexing.lexeme lexbuf) in
+      let newComment = (commentText, (Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf)) in
       last_comments := newComment :: !last_comments; 
       css lexbuf
     }

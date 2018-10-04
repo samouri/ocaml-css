@@ -42,7 +42,6 @@ let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
       prevNodes @ (Comment comment :: postNodes)
     else (
       (* mid ruleset case*)
-      (print_endline "HIII");
       let newNode = match node with
         | Comment _ -> failwith "should never see nested comments in css"
         | Ruleset (s, rules, p) -> 
