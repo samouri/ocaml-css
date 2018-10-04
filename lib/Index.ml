@@ -32,7 +32,7 @@ let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
   (* List.iter (fun x -> print_endline (show_stylesheet_item x)) prevNodes;
   List.iter (fun x -> print_endline (show_stylesheet_item x)) postNodes; *)
   match getLast prevNodes with
-  | None -> prevNodes @ (Comment comment :: postNodes)
+  | None -> Comment comment :: postNodes
   | Some node -> 
     let (_, endPos) = getStyleSheetItemPos node in
     if isAfter cEndP endPos then
