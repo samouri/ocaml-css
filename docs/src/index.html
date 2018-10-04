@@ -41,7 +41,8 @@
     <span> Made in Brooklyn</span> 
   </footer>
   <script>
-    const inputStartValue = `h1 {
+    const inputStartValue = `/* very helpful */
+h1 {
   font-size: 12px;
   font-family: OCaml-Times;
 }
@@ -52,7 +53,7 @@
     const cssInput = document.getElementsByClassName("css-input")[0];
     const cssAst = document.getElementsByClassName("css-ast")[0];
     cssInput.value = inputStartValue;
-    cssAst.value = window.astPrint(window.parse(inputStartValue));
+    cssAst.value = window.astPrint(inputStartValue);
 
     const cssCodeMirror = window.CodeMirror.fromTextArea(cssInput, {
       mode: 'css',
@@ -69,7 +70,7 @@
     cssCodeMirror.on('change', e => {
       const val = cssCodeMirror.getValue();
       try {
-        astCodeMirror.setValue( window.astPrint(window.parse(val)));
+        astCodeMirror.setValue( window.astPrint(val));
       } catch( e ) {
         console.log(e);
         astCodeMirror.setValue("ERROR");
