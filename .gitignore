@@ -17,3 +17,5 @@ Parser.automaton
 Parser.conflicts
 .cache
 dist
+_esy
+node_modules

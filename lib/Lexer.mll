@@ -92,7 +92,7 @@ let css_string2 = '\039' ( [ '\t' ' ' '!' '#' '$' '%' '&' '(' - '~' ] | '\\' css
 let css_string = css_string1 | css_string2
 let css_w = [' ' '\t' '\r' '\012']*
 let css_s = [' ' '\t' '\r' '\012']+
-let css_comment = '/' '*' [^ '*']* '*'+ ([^ '/'][^ '*']* '*'+)* '/'
+let css_comment = '/' '*' [^ '*']* '*'+ ([^'/''*'][^'*']* '*'+)* '/'
 let css_number = ['+' '-']? css_num '%'?
 let css_dimension = ['+' '-']? css_num css_ident
 

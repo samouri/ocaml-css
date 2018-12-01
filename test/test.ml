@@ -43,10 +43,9 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "comma-selector-function";
   *)
   "comment"; 
-  (*
   "comment-in";
   "comment-url";
-  "custom-media";
+  (* "custom-media";
   "custom-media-linebreak";
   "document";
   "document-linebreak"; *)
