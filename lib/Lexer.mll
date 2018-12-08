@@ -46,7 +46,7 @@ let donumber lexeme =
 
 let atkeyword lexeme =
   begin match String.lowercase_ascii lexeme with
-    "@import" -> ATIMPORT
+  | "@import" -> ATIMPORT
   | "@charset" -> ATCHARSET
   | "@media" -> ATMEDIA
   | "@page" -> ATPAGE

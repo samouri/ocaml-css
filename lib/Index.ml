@@ -8,6 +8,7 @@ let getRulesetItemPos (t:Types.ruleset_item) = match t with
   | Rule (_,_, pos) -> pos;;
 
 let getStyleSheetItemPos (t:Types.stylesheet_item)= match t with
+  | AtRule (t, prefix, v, pos) -> pos
   | Comment(_, pos) 
   | Ruleset (_,_, pos) -> pos;;
 
@@ -43,7 +44,7 @@ let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
     else (
       (* mid ruleset case*)
       let newNode = match node with
-        | Comment _ -> failwith "should never see nested comments in css"
+        | (*TODO: atrules should handle comments *) AtRule(_) | Comment _ -> failwith "should never see nested comments in css"
         | Ruleset (s, rules, p) -> 
           let rulesIsBeforeComments rule = 
             let (startPos, _) = getRulesetItemPos rule in
@@ -75,6 +76,6 @@ let parse  ?(fp="") (source: string) =
       let line = curr.Lexing.pos_lnum in
       let cnum = curr.Lexing.pos_cnum - curr.Lexing.pos_bol + 1 in
       let tok = Lexing.lexeme lexbuf in
-      (print_endline (Printf.sprintf "Error at location (%d:%d) with character: %s!" line cnum tok));
+      (print_endline (Printf.sprintf "Error at location (%d:%d) with token: %s!" line cnum tok));
       raise exn
     )
