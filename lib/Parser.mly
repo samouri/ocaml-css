@@ -5,7 +5,7 @@
 %token EOF 
 %token RPAREN LPAREN EQUALS SEMICOLON CHILD COLOR RSQUARE LSQUARE DOT STAR EXCLAMATION CONTAINS
 %token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX HASH
-%token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE
+%token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE ATNAMESPACE
 %token <string> STRING DOUBLESTRING IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT
 %token <int * int> UNICODE
 %token <float> PERCENTAGE
@@ -26,8 +26,14 @@ rulesets:
  | r=ruleset* { r }
  ;
 
+at_rule:
+ | k=ATKEYWORD S* prefix=IDENT? S* s=DOUBLESTRING SEMICOLON? { AtRule(k, prefix, DoubleString(s), $loc) }
+ | k=ATKEYWORD S* prefix=IDENT? S* s=STRING SEMICOLON? { AtRule(k, prefix, String(s), $loc) }
+ ;
+
 ruleset:
   | s=selectors LBRACE S* r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
+  | at_rule { $1 }
   ;
 
 rule_w: r=rule S* { r }; 

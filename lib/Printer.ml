@@ -45,10 +45,12 @@ let print_rules (rules: ruleset_item list) =
   |> String.concat "\n"
 ;;
 
+let optToStr = function None -> "" | Some s -> "" ^ s ^" ";;
 
 let print_selectors selectors = String.concat ",\n" selectors;;
 
 let print_stylesheet_item  = function 
+  | AtRule (name, prefix, v, _) -> Printf.sprintf "@%s %s%s;" name (optToStr prefix) (print_term v)
   | Comment c -> print_comment c
   | Ruleset (selectors, rules, _) ->
     Printf.sprintf "%s {\n%s\n}" (print_selectors selectors) (print_rules rules)
@@ -91,6 +93,11 @@ let ruleToJson (rule:ruleset_item): Yojson.Safe.json = match rule with
 
 let rulesetToJson (ruleset:stylesheet_item): Yojson.Safe.json = match ruleset with
  | Comment c -> commentToJson c
+ | AtRule (str, prefix, v, pos) -> `Assoc [
+   ("type", `String str);
+   (str, `String( (optToStr prefix) ^ (print_term v)));
+   ("position", positionToJson pos); 
+ ]
  | Ruleset (selectors, rules, pos ) ->
   `Assoc [
    ("type", `String "rule");
