@@ -46,7 +46,7 @@ let print_declaration ({name; value; important;}: declaration) =
 
 let print_declarations (rules: (declaration or_comment) list) =
   let printDeclarationOrComment (term:declaration or_comment)= match term with 
-    | Comment c -> print_comment c 
+    | Comment c -> "  " ^ (print_comment c)
     | Else declaration -> print_declaration declaration
   in
   rules
@@ -56,10 +56,10 @@ let print_declarations (rules: (declaration or_comment) list) =
 
 let printAtRule {name; prelude; block;} = Printf.sprintf "@%s %s;" name (printCValueList prelude);;
 let printStyleRule {prelude; declarations;} = 
-  Printf.sprintf "%s {\n%s\n}" (printCValueList ~sep:"," prelude) (print_declarations declarations)
+  Printf.sprintf "%s {\n%s\n}" (printCValueList ~sep:",\n" prelude) (print_declarations declarations)
 
 let printRule (rule: rule) = match rule with 
-  | Comment c -> "  " ^ print_comment c
+  | Comment c -> print_comment c
   | AtRule r -> printAtRule r
   | StyleRule r -> printStyleRule r
   ;;
