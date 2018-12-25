@@ -53,7 +53,7 @@ type declaration = {
   | Comment of comment 
   | Declaration of declaration [@@deriving show, yojson];; *)
 type styleRule = { 
-  prelude: (component_value) list;
+  prelude: (component_value list) list;
   declarations: (declaration or_comment) list; 
   pos: position;
 } [@@deriving show, yojson];;
