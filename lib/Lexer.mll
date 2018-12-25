@@ -1,5 +1,6 @@
 {
 open Parser
+open Types
 
 (*
  * Some code taken from Real World OCaml v2: https://dev.realworldocaml.org/parsing-with-ocamllex-and-menhir.html 
@@ -104,18 +105,18 @@ rule css =
     (* Skip over CDO, CDC, and comments. *)
     | "<!--" | "-->" | css_comment { 
       let commentText = extractComment (Lexing.lexeme lexbuf) in
-      let newComment = (commentText, (Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf)) in
+      let newComment = {value=commentText; pos=(Lexing.lexeme_start_p lexbuf, Lexing.lexeme_end_p lexbuf);} in
       last_comments := newComment :: !last_comments; 
       css lexbuf
     }
-    (* | '#' css_name { HASH(tail1(Lexing.lexeme lexbuf)) } *)
+    (*| '#' css_ident { HASH(tail1(Lexing.lexeme lexbuf)) }*)
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
     (* XXX String processing: strip quotes; delete backslash-newline *)
     | css_string { 
       (* double or single string? *)
       let str = Lexing.lexeme lexbuf in
-      if str.[0] = '"' then DOUBLESTRING(inner(str)) else STRING(inner(str)) 
+      STRING(str.[0], inner(str))
     }
     | css_nl { next_line lexbuf; css lexbuf }
     | css_number { donumber(Lexing.lexeme lexbuf) }

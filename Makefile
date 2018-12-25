@@ -1,4 +1,4 @@
-build: lexer parser
+build: lexer #parser
 	@esy build
 
 test: build
