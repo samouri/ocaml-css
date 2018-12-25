@@ -52,8 +52,8 @@ style_rule:
   ;
 
 selectors:
-  | cv=component_value_w { [cv] }
-  | cv=component_value_w S* COMMA S* cvs=selectors { cv :: cvs }
+  | cv=component_value_w+ { [cv] }
+  | cv=component_value_w+ S* COMMA S* cvs=selectors { cv :: cvs }
 
 declaration_w: d=declaration S* { d }; 
 declaration:
