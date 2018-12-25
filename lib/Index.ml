@@ -1,16 +1,18 @@
+open Types;;
+
 let print = Printer.prettyPrint;;
 let astPrint = Printer.astPrint;;
 
 let getLast lst = List.nth_opt (List.rev lst) 0;;
 
-let getRulesetItemPos (t:Types.ruleset_item) = match t with 
-  | Comment(_, pos)
-  | Rule (_,_, pos) -> pos;;
+let getRulesetItemPos (t:Types.declaration or_comment) = match t with 
+  | Comment {pos} -> pos
+  | Else {pos} -> pos;;
 
-let getStyleSheetItemPos (t:Types.stylesheet_item)= match t with
-  | AtRule (t, prefix, v, pos) -> pos
-  | Comment(_, pos) 
-  | Ruleset (_,_, pos) -> pos;;
+let getStyleSheetItemPos (t:Types.rule)= match t with
+  | Comment {pos} -> pos
+  | AtRule {pos} -> pos
+  | StyleRule {pos} -> pos;;
 
 let isBefore (pos1:Lexing.position) (pos2:Lexing.position) = 
   pos1.pos_lnum < pos2.pos_lnum || 
@@ -18,10 +20,9 @@ let isBefore (pos1:Lexing.position) (pos2:Lexing.position) =
 
 let isAfter p1 p2 = not (isBefore p1 p2);;
 
-open Types;;
 let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
   (* does comment start before the node starts? *)
-  let (commentString, (cStartP, cEndP)) = comment in
+  let (cStartP, cEndP) = comment.pos in
   let nodeIsBeforeComment node = 
     let (startPos, _) = getStyleSheetItemPos node in
     isBefore startPos cStartP
@@ -45,16 +46,18 @@ let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
       (* mid ruleset case*)
       let newNode = match node with
         | (*TODO: atrules should handle comments *) AtRule(_) | Comment _ -> failwith "should never see nested comments in css"
-        | Ruleset (s, rules, p) -> 
-          let rulesIsBeforeComments rule = 
-            let (startPos, _) = getRulesetItemPos rule in
+        | StyleRule {prelude; declarations; pos } -> 
+          let rulesIsBeforeComments (rule:Types.declaration or_comment) = 
+            let (startPos, _) = match rule with 
+              | Else {pos}  -> pos | Comment {pos} -> pos
+            in
             isBefore startPos cStartP
           in
-          let (prevRules, postRules) = List.partition rulesIsBeforeComments rules in
-          (s, prevRules @ (Comment comment :: postRules), p)
+          let (prevRules, postRules) = List.partition rulesIsBeforeComments declarations in
+          { prelude; declarations= (prevRules @ (Comment comment :: postRules)); pos;};
       in
       List.rev (List.tl (List.rev prevNodes)) 
-      @ ((Ruleset newNode) :: postNodes)
+      @ ((StyleRule newNode) :: postNodes)
     )
 ;;
 

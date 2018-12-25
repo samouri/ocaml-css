@@ -34,23 +34,23 @@ let get_test_for_dir dir =
 ;;
 
 let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
-  "at-namespace";
-  (* "charset";
-  "charset-linebreak"; *)
+  (* "at-namespace";
+  "charset";
+  "charset-linebreak";
   "colon-space"; 
-  "comma-attribute";
-  (*
-  "comma-selector-function";
-  *)
+  "comma-attribute"; 
+  "comma-selector-function"; 
   "comment"; 
   "comment-in";
   "comment-url";
-  (* "custom-media";
+  "custom-media";
   "custom-media-linebreak";
   "document";
-  "document-linebreak"; *)
+  "document-linebreak";
+  *)
   "empty";
-  (* "escapes";
+  (*
+  "escapes";
   "font-face";
   "font-face-linebreak";
   "hose-linebreak";
@@ -69,19 +69,17 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "media-messed";
   "messed-up";
   "namespace";
-  "namespace-linebreak";
-  *)
+  "namespace-linebreak"; 
   "no-semi";
-  (* "page-linebreak";
-  "paged-media";
-  *)
+  "page-linebreak";
+  "paged-media"; 
   "props";
   "quote-escape";
-  "quoted";
+  "quoted"; *)
   "rule";
-  "rules";
+  (* "rules";
   "selectors";
-  (* "supports";
+  "supports";
   "supports-linebreak";
   "wtf"; *)
   ])

@@ -6,7 +6,8 @@
 %token RPAREN LPAREN EQUALS SEMICOLON CHILD COLOR RSQUARE LSQUARE DOT STAR EXCLAMATION CONTAINS
 %token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX HASH
 %token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE ATNAMESPACE
-%token <string> STRING DOUBLESTRING IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT
+%token <string> IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT
+%token <char * string> STRING /* character representing either " or '*/
 %token <int * int> UNICODE
 %token <float> PERCENTAGE
 %token <float * string> DIMENSION
@@ -23,40 +24,61 @@ stylesheet:
   ;
 
 rulesets:
- | r=ruleset* { r }
+ | r=rule* { r }
  ;
+
+rule: 
+  | at_rule { $1 }
+  | style_rule { $1 }
 
 at_rule:
- | k=ATKEYWORD S* prefix=IDENT? S* s=DOUBLESTRING SEMICOLON? { AtRule(k, prefix, DoubleString(s), $loc) }
- | k=ATKEYWORD S* prefix=IDENT? S* s=STRING SEMICOLON? { AtRule(k, prefix, String(s), $loc) }
- ;
+ | k=ATKEYWORD S* prefix=component_value_w* S* s=STRING SEMICOLON? { 
+   AtRule({ 
+     name=k; 
+     prelude=prefix; 
+     block= Some {token=Brace; value=[]; pos=$loc};
+     pos=$loc;
+   })
+ };
 
-ruleset:
-  | s=selectors LBRACE S* r=rule_w* e=RBRACE { Ruleset (s , r, ($startpos(s), $endpos(e))) }
-  | at_rule { $1 }
+style_rule:
+  | s=component_value_w+ LBRACE S* r=declaration_w* e=RBRACE { 
+    StyleRule({
+      prelude=s; 
+      declarations=r; 
+      pos= ($startpos(s), $endpos(e));
+    })
+  }
   ;
 
-rule_w: r=rule S* { r }; 
-rule:
-  | star=STAR? p=IDENT S* COLON S* t=term_w+ e=SEMICOLON? { 
+declaration_w: d=declaration S* { d }; 
+declaration:
+  | star=STAR? p=IDENT S* COLON S* t=component_value_w+ e=SEMICOLON? { 
     let prefix = match star with None -> "" | Some _ -> "*" in
-    Rule (prefix ^ p, t, ($startpos(star), $startpos(e))) 
-    } 
+    Else({
+      name = prefix ^ p;
+      value = t;
+      important = false;
+      pos=($startpos(star), $startpos(e));
+    })
+  } 
   ;
 
-term_w: t=term S* { t }; 
-term: 
-  | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
-  | NUMBER { Number $1 } 
-  | PERCENTAGE { Percentage $1 } 
-  | STRING { String $1 }
-  | DOUBLESTRING { DoubleString $1 }
+component_value_w: cv=component_value S* { cv }; 
+component_value: 
   | IDENT { Ident $1 }
-  | URI { URI $1 }
- (* | FUNCTION { Func $1 } *)
+  | FUNCTION { Func $1 }
+  | HASH IDENT { Hash($2) }
+  | NUMBER { Number $1 } 
+  | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
+  | PERCENTAGE { Percentage $1 } 
+  | STRING { match $1 with (c, s) -> String(c,s) }
+  | URI { Uri $1 }
+ (* | block { $1 } *)
   ;
+ (* | UnicodeRange of string *)
 
-selectors: 
+(*selectors: 
   | s=selector S* { [ s ] }
   | s=selector S* COMMA S* ss=selectors { s :: ss }
   ; 
@@ -67,7 +89,6 @@ selector:
   | s1=selector S s2=simple_selector { s1 ^ " " ^ s2 }
   | s1=selector s2=simple_selector { s1 ^ s2 }
   | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
-  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=DOUBLESTRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "\"" ^ str ^ "\"" ^ "]" }
   ;
 
 simple_selector:
@@ -75,10 +96,4 @@ simple_selector:
   | dotclass { $1 }
   | hash { $1 }
 
-dotclass: DOT i=IDENT { "." ^ i }
-hash: HASH i=IDENT { "#" ^ i }
-
-element_name: 
-  | IDENT { $1 }
-  | STAR { "*" }
-  ;
+*)
