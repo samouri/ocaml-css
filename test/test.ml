@@ -39,10 +39,10 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "charset-linebreak";
   "colon-space"; 
   "comma-attribute"; 
-  "comma-selector-function"; 
+  "comma-selector-function"; *)
   "comment"; 
   "comment-in";
-  "comment-url";
+  "comment-url"; (*
   "custom-media";
   "custom-media-linebreak";
   "document";
@@ -77,9 +77,9 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "quote-escape";
   "quoted"; *)
   "rule";
-  (* "rules";
+  "rules";
   "selectors";
-  "supports";
+  (*"supports";
   "supports-linebreak";
   "wtf"; *)
   ])

@@ -42,7 +42,7 @@ at_rule:
  };
 
 style_rule:
-  | s=component_value_w+ LBRACE S* r=declaration_w* e=RBRACE { 
+  | s=selectors LBRACE S* r=declaration_w* e=RBRACE { 
     StyleRule({
       prelude=s; 
       declarations=r; 
@@ -50,6 +50,10 @@ style_rule:
     })
   }
   ;
+
+selectors:
+  | cv=component_value_w { [cv] }
+  | cv=component_value_w S* COMMA S* cvs=selectors { cv :: cvs }
 
 declaration_w: d=declaration S* { d }; 
 declaration:
