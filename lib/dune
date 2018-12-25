@@ -1,11 +1,12 @@
+(menhir
+  (infer false)
+  (modules Parser)
+  (flags --explain --table)
+)
+
 (library
   (name lib)
   (libraries yojson ppx_deriving_yojson.runtime menhirLib)
   (preprocess (pps ppx_deriving.show ppx_deriving_yojson))
   (flags (-w -39))
-)
-
-(menhir
-  (modules Parser)
-  (flags --explain --table)
 )

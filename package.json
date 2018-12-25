@@ -25,7 +25,7 @@
     "@opam/jbuilder": "*",
     "@opam/js_of_ocaml": "3.2.0",
     "@opam/js_of_ocaml-ppx": "3.2.0",
-    "@opam/menhir": "20180703",
+    "@opam/menhir": "20181113",
     "@opam/cmdliner": "1.0.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.1",
