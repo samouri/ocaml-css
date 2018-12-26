@@ -138,7 +138,7 @@ rule css =
     | '{' { LBRACE }
     | '}' { RBRACE }
     | ';' { SEMICOLON }
-    | '=' { EQUALS }
+ (*   | '=' { EQUALS } *)
     | '(' { LPAREN }
     | ')' { RPAREN }
     | '/' { SLASH }
@@ -150,4 +150,4 @@ rule css =
     | "~=" { CONTAINS }
     | "|=" { PREFIX }
     | eof { EOF }
-    | _ { ERROR((Lexing.lexeme lexbuf).[0]) }
+    | _ as d { DELIM(Lexing.lexeme lexbuf) }

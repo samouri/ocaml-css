@@ -23,6 +23,7 @@ and component_value =
   | Hash of string
   | Number of string
   | Dimension of float * string
+  | Delim of string
   | Percentage of float
   | UnicodeRange of string
   | String of char * string

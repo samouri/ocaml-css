@@ -74,7 +74,7 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "page-linebreak";
   "paged-media"; *)
   "props";
-  (* "quote-escape"; *)
+  "quote-escape";
   "quoted";
   "rule";
   "rules";
