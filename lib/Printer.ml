@@ -25,7 +25,7 @@ let rec print_cvalue ?(wrap=true) = function
   | HexColor str -> str 
   | Delim d -> d
   | Dimension (num, str) -> Printf.sprintf "%f%s" num str
-  | Func _ -> "TODO func"
+  | Func f -> f
   | UnicodeRange str -> str
   | Hash str -> "#" ^ str
   | Block { token; value; pos } -> String.concat "" [
@@ -39,9 +39,16 @@ let rec print_cvalue ?(wrap=true) = function
   should not be separated. So if we are at last elem we know no space, and also if we know next elem isblock then no space
  *)
 let rec printCValueList ?(sep=" ") (expressions: component_value list) =
+  let isBlock  = function Block _ -> true | _ -> false in
+  let isDelim = function Delim _ -> true | _ -> false in
+  let next i lst = List.nth lst (i+1) in
   expressions
-  |> List.mapi (fun (i:int) (cval:component_value) -> (print_cvalue cval) ^ 
-      if i + 1 >= (List.length expressions) || match (List.nth expressions (i+1)) with Block _ -> true | _ -> false
+  |> List.mapi (fun (i:int) (cval:component_value) -> 
+    (print_cvalue cval) ^ 
+      if (i + 1 >= (List.length expressions)) || 
+         (isBlock (next i expressions)) ||
+         (isDelim (next i expressions)) ||
+         (isDelim cval)
       then "" else sep)
   |> String.concat ""
 
@@ -113,7 +120,7 @@ let rulesetToJson (ruleset:rule): Yojson.Safe.json = match ruleset with
  | Comment c -> commentToJson c
  | AtRule ({name; prelude; block; pos;}) -> `Assoc [
    ("type", `String name);
-   (* (str, `String( (optToStr prefix) ^ (print_cvalue v))); *)
+   (name, `String(printCValueList prelude));
    ("position", positionToJson pos); 
  ]
  | StyleRule {prelude; declarations; pos;} ->

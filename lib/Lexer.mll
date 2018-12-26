@@ -111,10 +111,11 @@ rule css =
     }
     (*| '#' css_ident { HASH(tail1(Lexing.lexeme lexbuf)) }*)
     | '@' css_ident { atkeyword(Lexing.lexeme lexbuf) }
+    | css_ident '(' [^')']* ')' { FUNCTION(Lexing.lexeme(lexbuf)) }
     | css_ident '('? { doident (Lexing.lexeme lexbuf) }
     (* XXX String processing: strip quotes; delete backslash-newline *)
     | css_string { 
-      (* double or single string? *)
+      (* store which character was used to create the string. either '' or "" *)
       let str = Lexing.lexeme lexbuf in
       STRING(str.[0], inner(str))
     }
@@ -150,4 +151,4 @@ rule css =
     | "~=" { CONTAINS }
     | "|=" { PREFIX }
     | eof { EOF }
-    | _ as d { DELIM(Lexing.lexeme lexbuf) }
+    | _ { DELIM(Lexing.lexeme lexbuf) }
