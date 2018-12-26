@@ -1,7 +1,7 @@
 (menhir
   (infer false)
   (modules Parser)
-  (flags --explain --table)
+  (flags --explain --table --cmly)
 )
 
 (library

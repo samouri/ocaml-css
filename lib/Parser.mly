@@ -32,7 +32,7 @@ rule:
   | style_rule { $1 }
 
 at_rule:
- | k=ATKEYWORD S* prefix=component_value_w* S* s=STRING SEMICOLON? { 
+ | k=ATKEYWORD S* prefix=component_value_w* S* SEMICOLON? { 
    AtRule({ 
      name=k; 
      prelude=prefix; 
@@ -69,10 +69,10 @@ declaration:
   ;
 
 block:
-  | LPAREN value=component_value_w+ RPAREN {
+  | LPAREN value=component_value_w* RPAREN {
     Block({token=Paren; value; pos=$loc})
   }
-  | LSQUARE value=component_value_w+ RSQUARE {
+  | LSQUARE value=component_value_w* RSQUARE {
     Block({token=SquareBracket; value; pos=$loc})
   }
 
@@ -80,9 +80,11 @@ component_value_w: cv=component_value S* { cv };
 component_value: 
   | IDENT { Ident $1 }
   | FUNCTION { Func $1 }
+  | DOT IDENT { Ident( "." ^ $2) }
   | HASH IDENT { Hash($2) }
   | NUMBER { Number $1 } 
   | DELIM { Delim $1 }
+  | COLON { Delim ":" }
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
   | PERCENTAGE { Percentage $1 } 
   | STRING { match $1 with (c, s) -> String(c,s) }
