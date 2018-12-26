@@ -6,7 +6,7 @@
 %token RPAREN LPAREN EQUALS SEMICOLON CHILD COLOR RSQUARE LSQUARE DOT STAR EXCLAMATION CONTAINS
 %token S CDO CDC INCLUDES DASHMATCH LBRACE RBRACE PLUS MINUS GREATER COMMA COLON PREFIX HASH
 %token SLASH ATIMPORT ATCHARSET ATMEDIA ATPAGE ATFONTFACE ATNAMESPACE
-%token <string> IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT
+%token <string> IDENT NUMBER URI CHAR FUNCTION ATKEYWORD COMMENT DELIM
 %token <char * string> STRING /* character representing either " or '*/
 %token <int * int> UNICODE
 %token <float> PERCENTAGE
@@ -68,19 +68,28 @@ declaration:
   } 
   ;
 
+block:
+  | LPAREN value=component_value_w+ RPAREN {
+    Block({token=Paren; value; pos=$loc})
+  }
+  | LSQUARE value=component_value_w+ RSQUARE {
+    Block({token=SquareBracket; value; pos=$loc})
+  }
+
 component_value_w: cv=component_value S* { cv }; 
 component_value: 
   | IDENT { Ident $1 }
   | FUNCTION { Func $1 }
   | HASH IDENT { Hash($2) }
   | NUMBER { Number $1 } 
+  | DELIM { Delim $1 }
   | DIMENSION { match $1 with (f,u) -> Dimension(f,u) } 
   | PERCENTAGE { Percentage $1 } 
   | STRING { match $1 with (c, s) -> String(c,s) }
   | URI { Uri $1 }
- (* | block { $1 } *)
-  ;
+  | block { $1 }
  (* | UnicodeRange of string *)
+  ;
 
 (*selectors: 
   | s=selector S* { [ s ] }
@@ -98,6 +107,5 @@ selector:
 simple_selector:
   | element_name { $1 }
   | dotclass { $1 }
-  | hash { $1 }
-
+  | hash { $1 } 
 *)

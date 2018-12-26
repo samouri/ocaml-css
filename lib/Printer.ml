@@ -23,21 +23,27 @@ let rec print_cvalue ?(wrap=true) = function
   | Percentage i -> if hasFractionalPart i then (string_of_float i) ^ "%" else (string_of_int (int_of_float i)) ^ "%"
   | Uri str -> "url(" ^ str ^ ")"
   | HexColor str -> str 
+  | Delim d -> d
   | Dimension (num, str) -> Printf.sprintf "%f%s" num str
   | Func _ -> "TODO func"
   | UnicodeRange str -> str
   | Hash str -> "#" ^ str
-  | Block { token; value; pos } -> String.concat "n" [
+  | Block { token; value; pos } -> String.concat "" [
     (printOpenerBlockType token);
     (List.fold_left (fun a b -> (a ^ (print_cvalue b))) "" value);
     (printClosingBlockType token);
   ]
   ;;
 
+(*Gross hack here rn. Basically almost all cvalues get pprinted by space separators except for blocks which
+  should not be separated. So if we are at last elem we know no space, and also if we know next elem isblock then no space
+ *)
 let rec printCValueList ?(sep=" ") (expressions: component_value list) =
   expressions
-  |> List.map (print_cvalue)
-  |> String.concat sep
+  |> List.mapi (fun (i:int) (cval:component_value) -> (print_cvalue cval) ^ 
+      if i + 1 >= (List.length expressions) || match (List.nth expressions (i+1)) with Block _ -> true | _ -> false
+      then "" else sep)
+  |> String.concat ""
 
 let print_comment ({value;}: comment) = "/*" ^ value ^ "*/";;
 
