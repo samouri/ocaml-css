@@ -29,6 +29,7 @@
     "@opam/cmdliner": "1.0.2",
     "@opam/ppx_deriving": "^4.2.1",
     "@opam/ppx_deriving_yojson": "3.1",
+    "@opam/ocamlformat": "0.8",
     "@opam/yojson": "1.4.0",
     "@opam/ounit": "2.0.8"
   },
