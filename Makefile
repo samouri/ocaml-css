@@ -14,5 +14,8 @@ parser:
 release:
 	@esy release
 
+format: 
+	@esy dune build @fmt --auto-promote
+
 clean:
 	rm -rf ./lib/Lexer.ml ./lib/Parser.mli ./lib/Parser.ml _build _release
