@@ -52,13 +52,13 @@ let rec printCValueList ?(sep=" ") (expressions: component_value list) =
       then "" else sep)
   |> String.concat ""
 
-let print_comment ({value;}: comment) = "/*" ^ value ^ "*/";;
+let print_comment ({value}: comment) = "/*" ^ value ^ "*/";;
 
 let print_declaration ({name; value; important;}: declaration) = 
   Printf.sprintf "  %s: %s%s;" name (printCValueList value) (if important then " !important" else "");;
 
-let print_declarations (rules: (declaration or_comment) list) =
-  let printDeclarationOrComment (term:declaration or_comment)= match term with 
+let print_declarations (rules: (declaration orComment) list) =
+  let printDeclarationOrComment (term:declaration orComment)= match term with 
     | Comment c -> "  " ^ (print_comment c)
     | Else declaration -> print_declaration declaration
   in
@@ -68,8 +68,17 @@ let print_declarations (rules: (declaration or_comment) list) =
 ;;
 
 let printAtRule {name; prelude; block;} = Printf.sprintf "@%s %s;" name (printCValueList prelude);;
-let printStyleRule {prelude; declarations;} = 
-  Printf.sprintf "%s {\n%s\n}" (prelude |> List.map printCValueList |> String.concat ",\n") (print_declarations declarations)
+
+let rec printSelector = function 
+  | Simple selector -> printCValueList selector
+  | Compound selector -> printCValueList ~sep:"" selector
+  | Complex selectors -> selectors |> List.map printSelector |> String.concat " "
+  ;;
+
+let printStyleRule {prelude: Types.selector list; declarations;} = 
+  let selectors = prelude |> List.map printSelector |> String.concat ",\n" in
+  let declarationsS = print_declarations declarations in
+  Printf.sprintf "%s {\n%s\n}" selectors declarationsS;;
 
 let printRule (rule: rule) = match rule with 
   | Comment c -> print_comment c
@@ -106,7 +115,7 @@ let commentToJson ({value; pos}:comment) =
     ]
  ;;
 
-let ruleToJson (rule:(declaration or_comment)): Yojson.Safe.json = match rule with
+let ruleToJson (rule:(declaration orComment)): Yojson.Safe.json = match rule with
    | Comment c -> commentToJson c
    | Else ({name; value; pos}) -> `Assoc [ 
      ("type", `String "declaration");
@@ -126,7 +135,7 @@ let rulesetToJson (ruleset:rule): Yojson.Safe.json = match ruleset with
  | StyleRule {prelude; declarations; pos;} ->
   `Assoc [
    ("type", `String "rule");
-   ("selectors", `List (List.map (fun s -> `String (printCValueList s)) prelude ));
+   ("selectors", `List (List.map (fun s -> `String (printSelector s)) prelude ));
    ("declarations", `List (List.map ruleToJson declarations));
    ("position", positionToJson pos);
   ]

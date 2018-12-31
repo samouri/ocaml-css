@@ -5,13 +5,13 @@ let astPrint = Printer.astPrint;;
 
 let getLast lst = List.nth_opt (List.rev lst) 0;;
 
-let getRulesetItemPos (t:Types.declaration or_comment) = match t with 
-  | Comment {pos} -> pos
+let getRulesetItemPos (t:Types.declaration orComment) = match t with 
+  | Comment {pos}
   | Else {pos} -> pos;;
 
 let getStyleSheetItemPos (t:Types.rule)= match t with
-  | Comment {pos} -> pos
-  | AtRule {pos} -> pos
+  | Comment {pos}
+  | AtRule {pos}
   | StyleRule {pos} -> pos;;
 
 let isBefore (pos1:Lexing.position) (pos2:Lexing.position) = 
@@ -47,7 +47,7 @@ let insertComment (stylesheet:Types.stylesheet) (comment:Types.comment) =
       let newNode = match node with
         | (*TODO: atrules should handle comments *) AtRule(_) | Comment _ -> failwith "should never see nested comments in css"
         | StyleRule {prelude; declarations; pos } -> 
-          let rulesIsBeforeComments (rule:Types.declaration or_comment) = 
+          let rulesIsBeforeComments (rule:Types.declaration orComment) = 
             let (startPos, _) = match rule with 
               | Else {pos}  -> pos | Comment {pos} -> pos
             in
