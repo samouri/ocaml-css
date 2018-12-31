@@ -52,8 +52,13 @@ style_rule:
   ;
 
 selectors:
-  | cv=component_value_w+ { [cv] }
-  | cv=component_value_w+ S* COMMA S* cvs=selectors { cv :: cvs }
+  | s=selector S* { [s] }
+  | s=selector S* COMMA S* cvs=selectors { s :: cvs }
+
+selector:
+  | cv=component_value_wplus+ { Simple cv }
+  | cv=component_value+ { Compound cv }
+  (*| s1=selector s2=selector { Complex( s1::s2) }*)
 
 declaration_w: d=declaration S* { d }; 
 declaration:
@@ -76,6 +81,7 @@ block:
     Block({token=SquareBracket; value; pos=$loc})
   }
 
+component_value_wplus: cv=component_value S+ { cv }; 
 component_value_w: cv=component_value S* { cv }; 
 component_value: 
   | IDENT { Ident $1 }

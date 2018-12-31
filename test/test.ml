@@ -79,6 +79,8 @@ let suite = "suite">::: (List.map (fun dir -> get_test_for_dir dir) [
   "rule";
   "rules";
   "selectors";
+  "selector-space";
+  "selector-compound";
   (*"supports";
   "supports-linebreak";
   "wtf"; *)
