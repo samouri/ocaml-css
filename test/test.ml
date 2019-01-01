@@ -35,30 +35,30 @@ let suite =
   "suite"
   >::: List.map
          (fun dir -> get_test_for_dir dir)
-         [ "at-namespace" 
+         [ "at-namespace"
          ; "charset"
          ; "charset-linebreak"
-         ;  "colon-space"
+         ; "colon-space"
          ; "comma-attribute"
          ; "comma-selector-function"
          ; "comment"
          ; "comment-in"
          ; "comment-url"
-         (*
+           (*
   "custom-media";
   "custom-media-linebreak";
   "document";
   "document-linebreak";
   *)
-           ; "empty"
-         (*
+         ; "empty"
+           (*
   "escapes";
   "font-face";
   "font-face-linebreak";
   "hose-linebreak";
   "host"; *)
-  (* ; "import" *)
-  (*
+           (* ; "import" *)
+           (*
   "import-linebreak";
   "import-messed";
   "keyframes";
@@ -73,8 +73,7 @@ let suite =
   "messed-up";
   "namespace";
   "namespace-linebreak"; *)
-           ; "no-semi"
-         (*
+         ; "no-semi" (*
   "page-linebreak";
   "paged-media"; *)
          ; "props"
