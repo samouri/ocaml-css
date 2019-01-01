@@ -20,24 +20,20 @@
 
 /* stylesheet */
 stylesheet:
-  | r=rulesets S* EOF { r }
+  | r=rule* S* EOF { r }
   ;
-
-rulesets:
- | r=rule* { r }
- ;
 
 rule: 
   | at_rule { $1 }
   | style_rule { $1 }
 
 at_rule:
- | k=ATKEYWORD S* prefix=component_value_w* S* SEMICOLON? { 
+ | k=ATKEYWORD S* prefix=component_value_w+ S* semi=SEMICOLON? S* { 
    AtRule({ 
-     name=k; 
-     prelude=prefix; 
-     block= Some {token=Brace; value=[]; pos=$loc};
-     pos=$loc;
+     name = k; 
+     prelude = prefix; 
+     block = None; (*Some {token=Brace; value=[]; pos=$loc}; *)
+     pos = ($startpos(k), $endpos(semi));
    })
  };
 
@@ -58,7 +54,7 @@ selectors:
 selector:
   | cv=component_value_wplus+ { Simple cv }
   | cv=component_value+ { Compound cv }
-  (*| s1=selector s2=selector { Complex( s1::s2) }*)
+  | s1=selector s2=selector { Complex( [s1; s2]) }
 
 declaration_w: d=declaration S* { d }; 
 declaration:

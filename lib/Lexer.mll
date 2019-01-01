@@ -45,15 +45,7 @@ let donumber lexeme =
   else
     NUMBER(lexeme)
 
-let atkeyword lexeme =
-  begin match String.lowercase_ascii lexeme with
-  | "@import" -> ATIMPORT
-  | "@charset" -> ATCHARSET
-  | "@media" -> ATMEDIA
-  | "@page" -> ATPAGE
-  | "@font-face" -> ATFONTFACE
-  | s -> ATKEYWORD(tail1 s)
-  end
+let atkeyword lexeme = ATKEYWORD(String.lowercase_ascii(tail1 lexeme));;
 
 (* remove first two characters as well as the last two *)
 let extractComment (comment:string) : string = 

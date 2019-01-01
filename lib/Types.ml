@@ -29,8 +29,8 @@ and component_value =
 (* need to differentiate between single and complex because the components of
   compound are not space separated *)
 type selector =
-  | Simple of component_value list
   (* Simple or Combinator *)
+  | Simple of component_value list
   | Compound of component_value list
   | Complex of selector list
 [@@deriving show, yojson]
