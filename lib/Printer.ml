@@ -39,8 +39,10 @@ let rec print_cvalue ?(wrap = true) = function
   should not be separated. So if we are at last elem we know no space, and also if we know next elem isblock then no space
  *)
 let rec printCValueList ?(sep = " ") (expressions : component_value list) =
-  let isNotParens (token:Types.blockType) = match token with Paren -> false | _ -> true in
-  let isBlock = function Block { token } -> (isNotParens token) | _ -> false in
+  let isNotParens (token : Types.blockType) =
+    match token with Paren -> false | _ -> true
+  in
+  let isBlock = function Block {token} -> isNotParens token | _ -> false in
   let isDelim = function Delim _ -> true | _ -> false in
   let next i lst = List.nth lst (i + 1) in
   expressions
@@ -80,9 +82,8 @@ let rec printSelector = function
   | Complex selectors ->
       selectors |> List.map printSelector |> String.concat " "
 
-let printSelectors selectors = selectors 
-  |> List.map printSelector 
-  |> String.concat ",\n"
+let printSelectors selectors =
+  selectors |> List.map printSelector |> String.concat ",\n"
 
 let printStyleRule {prelude : Types.selector list; declarations} =
   let selectors = printSelectors prelude in
@@ -139,7 +140,9 @@ let rulesetToJson (ruleset : rule) : Yojson.Safe.json =
   | AtRule {name; prelude; block; pos} ->
       `Assoc
         [ ("type", `String name)
-        ; (name, `String (prelude |> List.map printCValueList |> String.concat ", "))
+        ; ( name
+          , `String (prelude |> List.map printCValueList |> String.concat ", ")
+          )
         ; ("position", positionToJson pos) ]
   | StyleRule {prelude; declarations; pos} ->
       `Assoc

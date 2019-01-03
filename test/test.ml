@@ -44,37 +44,34 @@ let suite =
          ; "comment"
          ; "comment-in"
          ; "comment-url"
-           (*
-  "custom-media";
-  "custom-media-linebreak";
-  "document";
-  "document-linebreak";
-  *)
-  ; "empty"
-           (*
-  "escapes";
-  "font-face";
-  "font-face-linebreak";
-  "hose-linebreak";
-  "host"; *)
-  ; "import"
-  ; "import-linebreak"
-  ; "import-messed"
-  (* "keyframes";
-  "keyframes-advanced";
-  "keyframes-complex";
-  "keyframes-linebreak";
-  "keyframes-messed";
-  "keyframes-vendor";
-  "media";
-  "media-linebreak";
-  "media-messed";
-  "messed-up"; *)
-  ; "namespace"
-  ; "namespace-linebreak"
-  ; "no-semi"
-  (*"page-linebreak";
-  "paged-media"; *)
+         (* ; "custom-media"
+         ; "custom-media-linebreak"
+         ; "document"
+         ; "document-linebreak" *)
+         ; "empty"
+         (* ; "escapes"
+         ; "font-face"
+         ; "font-face-linebreak"
+         ; "hose-linebreak"
+         ; "host" *)
+         ; "import"
+         ; "import-linebreak"
+         ; "import-messed"
+         (* ; "keyframes"
+         ; "keyframes-advanced"
+         ; "keyframes-complex"
+         ; "keyframes-linebreak"
+         ; "keyframes-messed"
+         ; "keyframes-vendor"
+         ; "media"
+         ; "media-linebreak"
+         ; "media-messed"
+         ; "messed-up" *)
+         ; "namespace"
+         ; "namespace-linebreak"
+         ; "no-semi"
+         (* ; "page-linebreak"
+         ; "paged-media" *)
          ; "props"
          ; "quote-escape"
          ; "quoted"
@@ -83,10 +80,10 @@ let suite =
          ; "selectors"
          ; "selector-space"
          ; "selector-compound"
-         (*"supports";
-  "supports-linebreak";
-  "wtf"; *)
-          ]
+         (* ; "supports"
+         ; "supports-linebreak"
+         ; "wtf"  *)
+         ]
 
 ;;
 run_test_tt_main suite

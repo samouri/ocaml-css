@@ -26,7 +26,7 @@ and component_value =
   | Block of block
 [@@deriving show, yojson]
 
-type atPrelude = component_value list list [@@deriving show, yojson];;
+type atPrelude = component_value list list [@@deriving show, yojson]
 
 (* need to differentiate between single and complex because the components of
   compound are not space separated *)
@@ -42,10 +42,7 @@ type comment = {value: string; pos: position} [@@deriving show, yojson]
 type 'a orComment = Comment of comment | Else of 'a [@@deriving show, yojson]
 
 type atrule =
-  { name: string
-  ; prelude: atPrelude
-  ; block: block option
-  ; pos: position }
+  {name: string; prelude: atPrelude; block: block option; pos: position}
 [@@deriving show, yojson]
 
 type declaration =
