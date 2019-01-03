@@ -20,7 +20,7 @@
 
 /* stylesheet */
 stylesheet:
-  | r=rule* S* EOF { r }
+  | S* r=rule* S* EOF { r }
   ;
 
 rule: 

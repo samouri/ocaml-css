@@ -4,7 +4,7 @@
     "rules": [
       {
         "type": "import",
-        "import": "url(test.css)\n    screen",
+        "import": "url(test.css) screen",
         "position": {
           "start": {
             "line": 1,

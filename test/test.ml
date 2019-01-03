@@ -50,16 +50,16 @@ let suite =
   "document";
   "document-linebreak";
   *)
-         ; "empty"
+  ; "empty"
            (*
   "escapes";
   "font-face";
   "font-face-linebreak";
   "hose-linebreak";
   "host"; *)
-  (* ; "import"
+  ; "import"
   ; "import-linebreak"
-  ; "import-messed" *)
+  ; "import-messed"
   (* "keyframes";
   "keyframes-advanced";
   "keyframes-complex";

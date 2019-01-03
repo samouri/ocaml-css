@@ -39,7 +39,8 @@ let rec print_cvalue ?(wrap = true) = function
   should not be separated. So if we are at last elem we know no space, and also if we know next elem isblock then no space
  *)
 let rec printCValueList ?(sep = " ") (expressions : component_value list) =
-  let isBlock = function Block _ -> true | _ -> false in
+  let isNotParens (token:Types.blockType) = match token with Paren -> false | _ -> true in
+  let isBlock = function Block { token } -> (isNotParens token) | _ -> false in
   let isDelim = function Delim _ -> true | _ -> false in
   let next i lst = List.nth lst (i + 1) in
   expressions
