@@ -78,8 +78,12 @@ let rec printSelector = function
   | Complex selectors ->
       selectors |> List.map printSelector |> String.concat " "
 
+let printSelectors selectors = selectors 
+  |> List.map printSelector 
+  |> String.concat ",\n"
+
 let printStyleRule {prelude : Types.selector list; declarations} =
-  let selectors = prelude |> List.map printSelector |> String.concat ",\n" in
+  let selectors = printSelectors prelude in
   let declarationsS = print_declarations declarations in
   Printf.sprintf "%s {\n%s\n}" selectors declarationsS
 
@@ -90,8 +94,6 @@ let printRule (rule : rule) =
   | StyleRule r -> printStyleRule r
 
 let optToStr = function None -> "" | Some s -> "" ^ s ^ " "
-
-let print_selectors selectors = String.concat ",\n" selectors
 
 let positionToJson (position : position) : Yojson.Safe.json =
   match position with start, finish ->
