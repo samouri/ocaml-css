@@ -57,11 +57,10 @@ let suite =
   "font-face-linebreak";
   "hose-linebreak";
   "host"; *)
-           (* ; "import" *)
-           (*
-  "import-linebreak";
-  "import-messed";
-  "keyframes";
+  (* ; "import"
+  ; "import-linebreak"
+  ; "import-messed" *)
+  (* "keyframes";
   "keyframes-advanced";
   "keyframes-complex";
   "keyframes-linebreak";
@@ -70,11 +69,11 @@ let suite =
   "media";
   "media-linebreak";
   "media-messed";
-  "messed-up";
-  "namespace";
-  "namespace-linebreak"; *)
-         ; "no-semi" (*
-  "page-linebreak";
+  "messed-up"; *)
+  ; "namespace"
+  ; "namespace-linebreak"
+  ; "no-semi"
+  (*"page-linebreak";
   "paged-media"; *)
          ; "props"
          ; "quote-escape"

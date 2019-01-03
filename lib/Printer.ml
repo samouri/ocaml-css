@@ -70,7 +70,8 @@ let print_declarations (rules : declaration orComment list) =
   rules |> List.map printDeclarationOrComment |> String.concat "\n"
 
 let printAtRule {name; prelude; block} =
-  Printf.sprintf "@%s %s;" name (printCValueList prelude)
+  let preludeStr = prelude |> List.map printCValueList |> String.concat ", " in
+  Printf.sprintf "@%s %s;" name preludeStr
 
 let rec printSelector = function
   | Simple selector -> printCValueList selector
@@ -137,7 +138,7 @@ let rulesetToJson (ruleset : rule) : Yojson.Safe.json =
   | AtRule {name; prelude; block; pos} ->
       `Assoc
         [ ("type", `String name)
-        ; (name, `String (printCValueList prelude))
+        ; (name, `String (prelude |> List.map printCValueList |> String.concat ", "))
         ; ("position", positionToJson pos) ]
   | StyleRule {prelude; declarations; pos} ->
       `Assoc

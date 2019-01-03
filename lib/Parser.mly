@@ -28,7 +28,7 @@ rule:
   | style_rule { $1 }
 
 at_rule:
- | k=ATKEYWORD S* prefix=component_value_w+ S* semi=SEMICOLON? S* { 
+ | k=ATKEYWORD S* prefix=at_rule_prelude S* semi=SEMICOLON? S* { 
    AtRule({ 
      name = k; 
      prelude = prefix; 
@@ -55,6 +55,11 @@ selector:
   | cv=component_value_wplus+ { Simple cv }
   | cv=component_value+ { Compound cv }
   | s1=selector s2=selector { Complex( [s1; s2]) }
+
+at_rule_prelude: 
+  | cv=component_value_w* { [cv] }
+  | cv1 = component_value_w* S* COMMA S* cvs=at_rule_prelude { cv1 :: cvs }
+  ;;
 
 declaration_w: d=declaration S* { d }; 
 declaration:
