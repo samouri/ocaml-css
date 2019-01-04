@@ -1,15 +1,27 @@
-type operator = NoOp | Slash | Comma [@@deriving show, yojson]
-
 type lexing_position = Lexing.position =
   {pos_fname: string; pos_lnum: int; pos_bol: int; pos_cnum: int}
 [@@deriving yojson, show]
 
 type position = lexing_position * lexing_position [@@deriving yojson, show]
 
-type blockType = Paren | SquareBracket | Brace [@@deriving yojson, show]
+type comment = {value: string; pos: position} [@@deriving show, yojson]
 
-type block = {token: blockType; value: component_value list; pos: position}
+type 'a orComment = Comment of comment | Else of 'a [@@deriving show, yojson]
+
+type block = {token: blockType; value: blockValue; pos: position}
 [@@deriving yojson, show]
+
+and blockType = Paren | SquareBracket | Brace [@@deriving yojson, show]
+
+and blockValue = 
+  | Stylesheet of stylesheet 
+  | Declarations of (declaration orComment) list
+  | CValueList of component_value list
+  [@@deriving yojson, show] 
+
+and declaration =
+  {name: string; value: component_value list; important: bool; pos: position}
+[@@deriving show, yojson] 
 
 and component_value =
   | Ident of string
@@ -26,39 +38,27 @@ and component_value =
   | Block of block
 [@@deriving show, yojson]
 
-type atPrelude = component_value list list [@@deriving show, yojson]
+and atPrelude = component_value list list [@@deriving show, yojson]
 
 (* need to differentiate between single and complex because the components of
   compound are not space separated *)
-type selector =
-  (* Simple or Combinator *)
+and selector =
   | Simple of component_value list
   | Compound of component_value list
   | Complex of selector list
 [@@deriving show, yojson]
 
-type comment = {value: string; pos: position} [@@deriving show, yojson]
-
-type 'a orComment = Comment of comment | Else of 'a [@@deriving show, yojson]
-
-type atrule =
+and atrule =
   {name: string; prelude: atPrelude; block: block option; pos: position}
 [@@deriving show, yojson]
 
-type declaration =
-  {name: string; value: component_value list; important: bool; pos: position}
-[@@deriving show, yojson]
-
-(* type declarationOrComment = 
-  | Comment of comment 
-  | Declaration of declaration [@@deriving show, yojson];; *)
-type styleRule =
+and styleRule =
   { prelude: selector list
   ; declarations: declaration orComment list
   ; pos: position }
 [@@deriving show, yojson]
 
-type rule = Comment of comment | StyleRule of styleRule | AtRule of atrule
+and rule = Comment of comment | StyleRule of styleRule | AtRule of atrule
 [@@deriving show, yojson]
 
-type stylesheet = rule list [@@deriving show, yojson]
+and stylesheet = rule list [@@deriving show, yojson]

@@ -122,25 +122,19 @@ rule css =
     | '.' { DOT }
     | '#' { HASH }
     | ',' { COMMA }
-    | '+' { PLUS }
-    | '-' { MINUS }
     | '[' { LSQUARE }
     | ']' { RSQUARE }
     | ':' { COLON }
-    | '>' { CHILD }
+    | '>' { DELIM(">") } 
     | '{' { LBRACE }
     | '}' { RBRACE }
     | ';' { SEMICOLON }
- (*   | '=' { EQUALS } *)
     | '(' { LPAREN }
     | ')' { RPAREN }
-    | '/' { SLASH }
-    (* Only in font: line-height declaration *)
     | '!' { EXCLAMATION }
-    (* Only followed by "important" *)
-    (* XXX Parentheses? *)
     | css_s { S }
-    | "~=" { CONTAINS }
-    | "|=" { PREFIX }
+    | "||" { DELIM("||") }
+    | "~=" { DELIM("~=") }
+    | "|=" { DELIM("|=") }
     | eof { EOF }
     | _ { DELIM(Lexing.lexeme lexbuf) }

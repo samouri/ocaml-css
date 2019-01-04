@@ -1,0 +1,19 @@
+li a {
+  color: red;
+}
+
+li > a {
+  color: red;
+}
+
+li + a {
+  color: red;
+}
+
+li ~ a {
+  color: red;
+}
+
+li || td {
+  color: red;
+}

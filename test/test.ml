@@ -39,6 +39,7 @@ let suite =
          ; "charset"
          ; "charset-linebreak"
          ; "colon-space"
+         ; "combinators"
          ; "comma-attribute"
          ; "comma-selector-function"
          ; "comment"

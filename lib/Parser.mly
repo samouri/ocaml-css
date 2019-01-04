@@ -20,9 +20,10 @@
 
 /* stylesheet */
 stylesheet:
-  | S* r=rule* S* EOF { r }
+  | r=rule_w* EOF { r }
   ;
 
+rule_w: S* r=rule S* { r }
 rule: 
   | at_rule { $1 }
   | style_rule { $1 }
@@ -76,10 +77,10 @@ declaration:
 
 block:
   | LPAREN value=component_value_w* RPAREN {
-    Block({token=Paren; value; pos=$loc})
+    Block({token=Paren; value=CValueList(value); pos=$loc})
   }
   | LSQUARE value=component_value_w* RSQUARE {
-    Block({token=SquareBracket; value; pos=$loc})
+    Block({token=SquareBracket; value=CValueList(value); pos=$loc})
   }
 
 component_value_wplus: cv=component_value S+ { cv }; 
@@ -99,22 +100,3 @@ component_value:
   | block { $1 }
  (* | UnicodeRange of string *)
   ;
-
-(*selectors: 
-  | s=selector S* { [ s ] }
-  | s=selector S* COMMA S* ss=selectors { s :: ss }
-  ; 
-
-(* simple_selector [ combinator selector | S+ [ combinator? selector ]? ]? *)
-selector: 
-  | simple_selector { $1 }
-  | s1=selector S s2=simple_selector { s1 ^ " " ^ s2 }
-  | s1=selector s2=simple_selector { s1 ^ s2 }
-  | s=simple_selector LSQUARE S* ident=IDENT EQUALS str=STRING S* RSQUARE { s ^ "[" ^ ident ^ "=" ^ "'" ^ str ^ "'" ^ "]" }
-  ;
-
-simple_selector:
-  | element_name { $1 }
-  | dotclass { $1 }
-  | hash { $1 } 
-*)
