@@ -15,17 +15,16 @@ let printClosingBlockType = function
   | SquareBracket -> "]"
   | Brace -> "}"
 
-let rec printBlock {token; value; pos } = 
-  let sep = match token with Brace ->  "\n" | SquareBracket | Paren -> "" in
-  let contents = match value with 
+let rec printBlock {token; value; pos} =
+  let sep = match token with Brace -> "\n" | SquareBracket | Paren -> "" in
+  let contents =
+    match value with
     | Stylesheet s -> prettyPrint s
     | Declarations d -> print_declarations d
-    | CValueList clist -> printCValueList ~sep: "" clist
-    in
-      String.concat sep
-        [ printOpenerBlockType token
-        ; contents
-        ; printClosingBlockType token ]
+    | CValueList clist -> printCValueList ~sep:"" clist
+  in
+  String.concat sep
+    [printOpenerBlockType token; contents; printClosingBlockType token]
 
 and print_cvalue ?(wrap = true) = function
   | String (ch, str) -> if wrap then Printf.sprintf "%c%s%c" ch str ch else str
@@ -58,8 +57,7 @@ and printCValueList ?(sep = " ") (expressions : component_value list) =
          print_cvalue cval
          ^
          if
-           i + 1 >= List.length expressions
-           || isBlock (next i expressions)
+           i + 1 >= List.length expressions || isBlock (next i expressions)
            (* || isDelim (next i expressions) *)
            (* || isDelim cval *)
          then ""
@@ -108,69 +106,69 @@ and prettyPrint (stylesheet : stylesheet) =
   |> String.concat "\n\n" )
   ^ "\n"
 
-  let positionToJson (position : position) : Yojson.Safe.json =
-    match position with start, finish ->
+let positionToJson (position : position) : Yojson.Safe.json =
+  match position with start, finish ->
+    `Assoc
+      [ ( "start"
+        , `Assoc
+            [ ("line", `Int start.pos_lnum)
+            ; ( "column"
+              , `Int (start.Lexing.pos_cnum - start.Lexing.pos_bol + 1) ) ] )
+      ; ( "end"
+        , `Assoc
+            [ ("line", `Int finish.pos_lnum)
+            ; ( "column"
+              , `Int (finish.Lexing.pos_cnum - finish.Lexing.pos_bol + 1) ) ]
+        )
+      ; ("source", `String start.pos_fname) ]
+
+let termsToJson (value : component_value list) =
+  match value with _ ->
+    `String (String.concat " " (List.map print_cvalue value))
+
+let commentToJson ({value; pos} : comment) =
+  `Assoc
+    [ ("type", `String "comment")
+    ; ("comment", `String value)
+    ; ("position", positionToJson pos) ]
+
+let ruleToJson (rule : declaration orComment) : Yojson.Safe.json =
+  match rule with
+  | Comment c -> commentToJson c
+  | Else {name; value; pos} ->
       `Assoc
-        [ ( "start"
-          , `Assoc
-              [ ("line", `Int start.pos_lnum)
-              ; ( "column"
-                , `Int (start.Lexing.pos_cnum - start.Lexing.pos_bol + 1) ) ] )
-        ; ( "end"
-          , `Assoc
-              [ ("line", `Int finish.pos_lnum)
-              ; ( "column"
-                , `Int (finish.Lexing.pos_cnum - finish.Lexing.pos_bol + 1) ) ]
+        [ ("type", `String "declaration")
+        ; ("property", `String name)
+        ; ("value", termsToJson value)
+        ; ("position", positionToJson pos) ]
+
+let rulesetToJson (ruleset : rule) : Yojson.Safe.json =
+  match ruleset with
+  | Comment c -> commentToJson c
+  | AtRule {name; prelude; block; pos} ->
+      `Assoc
+        [ ("type", `String name)
+        ; ( name
+          , `String (prelude |> List.map printCValueList |> String.concat ", ")
           )
-        ; ("source", `String start.pos_fname) ]
+        ; ("position", positionToJson pos) ]
+  | StyleRule {prelude; declarations; pos} ->
+      `Assoc
+        [ ("type", `String "rule")
+        ; ( "selectors"
+          , `List (List.map (fun s -> `String (printSelector s)) prelude) )
+        ; ("declarations", `List (List.map ruleToJson declarations))
+        ; ("position", positionToJson pos) ]
 
-  let termsToJson (value : component_value list) =
-    match value with _ ->
-      `String (String.concat " " (List.map print_cvalue value))
+let rec rulesetsToJson (stylesheet : stylesheet) : Yojson.Safe.json =
+  match stylesheet with
+  | [] -> `List []
+  | hd :: tl -> `List (rulesetToJson hd :: List.map rulesetToJson tl)
 
-  let commentToJson ({value; pos} : comment) =
-    `Assoc
-      [ ("type", `String "comment")
-      ; ("comment", `String value)
-      ; ("position", positionToJson pos) ]
-
-  let ruleToJson (rule : declaration orComment) : Yojson.Safe.json =
-    match rule with
-    | Comment c -> commentToJson c
-    | Else {name; value; pos} ->
-        `Assoc
-          [ ("type", `String "declaration")
-          ; ("property", `String name)
-          ; ("value", termsToJson value)
-          ; ("position", positionToJson pos) ]
-
-  let rulesetToJson (ruleset : rule) : Yojson.Safe.json =
-    match ruleset with
-    | Comment c -> commentToJson c
-    | AtRule {name; prelude; block; pos} ->
-        `Assoc
-          [ ("type", `String name)
-          ; ( name
-            , `String (prelude |> List.map printCValueList |> String.concat ", ")
-            )
-          ; ("position", positionToJson pos) ]
-    | StyleRule {prelude; declarations; pos} ->
-        `Assoc
-          [ ("type", `String "rule")
-          ; ( "selectors"
-            , `List (List.map (fun s -> `String (printSelector s)) prelude) )
-          ; ("declarations", `List (List.map ruleToJson declarations))
-          ; ("position", positionToJson pos) ]
-
-  let rec rulesetsToJson (stylesheet : stylesheet) : Yojson.Safe.json =
-    match stylesheet with
-    | [] -> `List []
-    | hd :: tl -> `List (rulesetToJson hd :: List.map rulesetToJson tl)
-
-  let stylesheetToJson (stylesheet : stylesheet) : Yojson.Safe.json =
-    `Assoc
-      [ ("type", `String "stylesheet")
-      ; ("stylesheet", `Assoc [("rules", rulesetsToJson stylesheet)]) ]
+let stylesheetToJson (stylesheet : stylesheet) : Yojson.Safe.json =
+  `Assoc
+    [ ("type", `String "stylesheet")
+    ; ("stylesheet", `Assoc [("rules", rulesetsToJson stylesheet)]) ]
 
 let astPrint (rulesets : stylesheet) : string =
   Yojson.Safe.pretty_to_string ~std:true (stylesheetToJson rulesets)

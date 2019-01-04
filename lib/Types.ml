@@ -13,15 +13,15 @@ type block = {token: blockType; value: blockValue; pos: position}
 
 and blockType = Paren | SquareBracket | Brace [@@deriving yojson, show]
 
-and blockValue = 
-  | Stylesheet of stylesheet 
-  | Declarations of (declaration orComment) list
+and blockValue =
+  | Stylesheet of stylesheet
+  | Declarations of declaration orComment list
   | CValueList of component_value list
-  [@@deriving yojson, show] 
+[@@deriving yojson, show]
 
 and declaration =
   {name: string; value: component_value list; important: bool; pos: position}
-[@@deriving show, yojson] 
+[@@deriving show, yojson]
 
 and component_value =
   | Ident of string

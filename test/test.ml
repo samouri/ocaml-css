@@ -45,12 +45,12 @@ let suite =
          ; "comment"
          ; "comment-in"
          ; "comment-url"
-         (* ; "custom-media"
+           (* ; "custom-media"
          ; "custom-media-linebreak"
          ; "document"
          ; "document-linebreak" *)
          ; "empty"
-         (* ; "escapes"
+           (* ; "escapes"
          ; "font-face"
          ; "font-face-linebreak"
          ; "hose-linebreak"
@@ -58,7 +58,7 @@ let suite =
          ; "import"
          ; "import-linebreak"
          ; "import-messed"
-         (* ; "keyframes"
+           (* ; "keyframes"
          ; "keyframes-advanced"
          ; "keyframes-complex"
          ; "keyframes-linebreak"
@@ -70,8 +70,7 @@ let suite =
          ; "messed-up" *)
          ; "namespace"
          ; "namespace-linebreak"
-         ; "no-semi"
-         (* ; "page-linebreak"
+         ; "no-semi" (* ; "page-linebreak"
          ; "paged-media" *)
          ; "props"
          ; "quote-escape"
@@ -84,7 +83,7 @@ let suite =
          (* ; "supports"
          ; "supports-linebreak"
          ; "wtf"  *)
-         ]
+          ]
 
 ;;
 run_test_tt_main suite
